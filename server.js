@@ -4,10 +4,12 @@ require('dotenv').config()
 const express = require('express');
 //import body parser, to handle JSON in request bodys
 var bodyParser = require('body-parser');
+const CryptoJS = require('crypto-js');
 //create an express app
 const app = express();
 const User = require('./objects/user.js');
 const Database = require('./objects/database.js');
+const userdb = require('./models/user.js');
 //make express use body-parser's json
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -21,9 +23,14 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 
+
 //GET request handler for homepage
 app.get('/', function (req, res) {
-    res.status(200).send("You are at the Homepage!");
+    let db = new User({"boomer": "lord"});
+    res.status(200).send(db);
+    db.getData().boomer = "nopb"
+    console.log(db.getData());
+
 })
 
 //GET request handler for Signup Page
@@ -33,7 +40,7 @@ app.get('/signup', (req, res) => {
 
 //POST request handler for Signup, adds an User to the DB by creating an Object
 app.post('/signup', async (req, res) => {
-    const user = await new User(req.body);
+    const user = await new User (req.body);
     let status = await user.createUser();
     console.log(status)
     if(!status){
@@ -49,6 +56,28 @@ app.post('/signup', async (req, res) => {
       </script>`);
     }
 })
+
+app.get('/login', async(req, res) => {
+    res.status(200).render(__dirname+'/public/views/login/login.ejs');
+})
+
+app.post('/login', async(req, res) => {
+    //Login a registered user
+    try {
+        const { username, password } = req.body;
+        const user = await new User().findExisting(username, CryptoJS.AES.encrypt(password, secretKey));
+        if (!user) {
+            return res.status(401).send({error: 'Login failed! Check authentication credentials'});
+        }
+        const token = await new user.generateAuthToken();
+        console.log("h"+ user, token)
+        res.send({ user, token });
+    } catch (error) {
+        res.status(400).send(error);
+    }
+
+})
+
 
 app.get('/showdb',async (req,res)=>{
     let request = await new Database();
