@@ -34,5 +34,5 @@ User.methods.generateAuthToken = async function() {
 //create a mongodb model with the name 'User' and Schema User
 let user = mongoose.model('User', User);
 
-//export the model to use in main files
+//export the model to use it in main files
 module.exports = user;
