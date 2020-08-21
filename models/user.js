@@ -15,21 +15,12 @@ let User = new Schema({
     password: {type: String, required: true},
     username: {type: String, required: true},
     tokens: [{
-        token: {
-            type: String,
-            required: true
-        }
+    token: {type: String},
+    _id: 0
     }]
 })
 
-User.methods.generateAuthToken = async function() {
-    // Generate an auth token for the user
-    const user = this;
-    const token = jwt.sign({_id: user._id}, process.env.JWT_KEY);
-    user.tokens = user.tokens.concat({token});
-    await user.save();
-    return token;
-}
+
 
 //create a mongodb model with the name 'User' and Schema User
 let user = mongoose.model('User', User);
