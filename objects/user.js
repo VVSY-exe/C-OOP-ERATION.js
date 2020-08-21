@@ -28,7 +28,6 @@ class User extends Database {
         let newUser = new user(this.getData());
         let cryptedPassword = CryptoJS.AES.encrypt(this.getData().password, secretKey)
         newUser.password = cryptedPassword;
-        await newUser.generateAuthToken();
         await newUser.save((err, user) => {
             if (err) {
                 console.log("An error occured while saving your data:\n" + err);
@@ -49,14 +48,51 @@ class User extends Database {
         }
     }
 
-    async generateAuthToken() {
-        await user.generateAuthToken();
+    async loginCheck(username,password){
+        let user = await this.findExisting(username,password);
+        return user;
     }
 
-    async login(){
-
+    async generateToken(User,res){
+        if (User != null) {
+            let userid = User._id;
+            const accessToken = jwt.sign(User.toJSON(), process.env.JWT_KEY);
+            res.cookie('Authorization', accessToken, {
+                maxAge: 1000000000000,
+                httpOnly: false
+            });
+            console.log("user: "+ User)
+            let userdata = await user.findById(userid);
+            await userdata.tokens.push(accessToken);
+            await userdata.save();
+            res.redirect('/')
+        } else {
+            res.send('Wrong credentials');
+        }
     }
 
+    async logout(user,req,res,all=false){
+        if(all===false){
+        let token = req.cookies.Authorization;
+        res.clearCookie("Authorization");
+        user.tokens = user.tokens.filter(ele=>{
+            return ele._id != token;
+        }) 
+        await user.save();
+    }
+    else if(all === true){
+        user.tokens = [];
+        console.log('Cleared all tokens');
+        await user.save();
+        let token = req.cookies.Authorization;
+        res.clearCookie("Authorization");
+        
+    }
+
+    else{
+        res.send('Invalid Argument');
+    }
+    }
 
 }
 
