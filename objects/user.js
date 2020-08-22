@@ -21,7 +21,7 @@ class User extends Database {
     async createUser() {
         
         let bool = await this.findExisting(this.getData().username);    //calls the findExisting function of Database class to check if username already exists
-        console.log(bool)                                                            //*advantage of inheritance* 
+                                                                        //*advantage of inheritance* 
                                                                     //the function is directly accessible to the User class because of inheritance
         if(bool===null){
         let flag = 1;
@@ -61,7 +61,7 @@ class User extends Database {
                 maxAge: 1000000000000,
                 httpOnly: false
             });
-            console.log("user: "+ User)
+            
             let userdata = await user.findById(userid);
             await userdata.tokens.push(accessToken);
             await userdata.save();
@@ -85,8 +85,7 @@ class User extends Database {
         console.log('Cleared all tokens');
         await user.save();
         let token = req.cookies.Authorization;
-        res.clearCookie("Authorization");
-        
+        res.clearCookie("Authorization");        
     }
 
     else{
