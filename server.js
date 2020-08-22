@@ -4,6 +4,7 @@ require('dotenv').config()
 const express = require('express');
 //import body parser, to handle JSON in request bodys
 var bodyParser = require('body-parser');
+const http = require('http');
 const CryptoJS = require('crypto-js');
 const jwt = require('jsonwebtoken');
 //create an express app
@@ -48,7 +49,6 @@ app.get('/signup', (req, res) => {
 app.post('/signup', async (req, res) => {
     const user = await new User(req.body);
     let status = await user.createUser();
-    console.log(status)
     if (!status) {
         res.send('You failed to register!')
     } else {
@@ -95,6 +95,8 @@ app.get('/logoutall',authenticateToken,async(req,res)=>{
     }
 })
 
+
+
 app.get('/showdb', async (req, res) => {
     let request = await new Database();
     let db = await request.showdb({});
@@ -103,4 +105,13 @@ app.get('/showdb', async (req, res) => {
     res.send("User Database:\n\n" + JSON.stringify(db, null, "\t"))
 })
 
+app.get('/keepalive', (req,res)=>{
+    res.send('Ping Recieved '+Date.now())
+    console.log('Ping Recieved '+Date.now());
+})
+
 app.listen('3000', () => console.log("Listening to Port 3000"));
+
+setInterval(function(){
+    http.get(process.env.hosturl+'/keepalive');
+},30000)
