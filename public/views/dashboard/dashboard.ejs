@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/views/dashboard/style.css">
+</head>
+<body>
+    <div>
+        You are logged in as <%=user.name%><br><br>
+    </div>
+    <div>
+        <a href="/addfriends">Follow Friends</a><br><br>
+    </div>
+    <div>
+        Your Friends Are:<br><br>
+        <%following.forEach(ele=>{%>
+            <%=ele%><br>
+        <%})%>
+    </div>
+</body>
+</html>
