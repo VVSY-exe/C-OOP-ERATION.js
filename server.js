@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const User = require('./objects/user.js');
 const Database = require('./objects/database.js');
-const userdb = require('./models/user.js');
+const Random = require('./objects/random.js')
 const authenticateToken = require('./middleware/authenticate.js');
 var cookieParser = require('cookie-parser');
 const user = require('./models/user.js');
@@ -31,9 +31,18 @@ app.set('view engine', 'ejs');
 
 
 //GET request handler for homepage
-app.get('/', authenticateToken, function (req, res) {
+app.get('/', authenticateToken, async function (req, res) {
     if(req.user!=null){
-    res.send(`You are logged in as ${req.user.name}`);
+        let following = [];
+        let database = await new User().getModel();
+        for(ele of req.user.following){
+            let name = await database.findById(ele.friend);
+            await console.log(name.name)
+            await following.push(name.name);
+            
+        }
+        console.log(following)
+    res.render((__dirname+ '/public/views/dashboard/dashboard.ejs'),{user:req.user,following});
     }
     else{
         res.send('You are not logged in, please login to view content');
@@ -104,6 +113,34 @@ app.get('/showdb', async (req, res) => {
     res.type('json');
     res.send("User Database:\n\n" + JSON.stringify(db, null, "\t"))
 })
+
+
+app.get('/addfriends',authenticateToken, async(req,res)=>{
+    if(req.user!=null){
+        let userClass= new User();
+        let database = await userClass.showdb();
+        res.render((__dirname+ '/public/views/friends/followfriends.ejs'),{
+            user:req.user,
+            database,
+            makeid: new Random().randomString()
+    });
+        }
+        else{
+            res.send('You are not logged in, please login to view content');
+        }
+})
+
+app.post('/addfriends',authenticateToken,async (req,res)=>{
+    let friends = Object.values(req.body);
+    let user = req.user;
+    friends.forEach(friend=>{
+        user.following.push({friend});
+    })
+    await user.save();
+    res.redirect('/');
+    
+})
+
 
 app.get('/keepalive', (req,res)=>{
     res.send('Ping Recieved '+Date.now())
