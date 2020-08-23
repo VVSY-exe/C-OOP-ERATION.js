@@ -14,6 +14,12 @@ let User = new Schema({
     name: {type: String, required: true},
     password: {type: String, required: true},
     username: {type: String, required: true},
+    following: [{
+        friend: String
+    }],
+    followers: [{
+        friend: String
+    }],
     tokens: [{
     token: {type: String},
     _id: 0
