@@ -43,5 +43,9 @@ class Database {
         }
         }
     }
+
+    async getModel(){
+        return user;
+    }
 }
 module.exports = Database;
