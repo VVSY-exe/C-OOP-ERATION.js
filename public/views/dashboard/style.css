@@ -6,3 +6,6 @@ div{
     font-family: 'Lucida Console';
     text-align: center;
 }
+#topleft{
+    text-align: right;
+}
