@@ -35,7 +35,7 @@ app.get('/', authenticateToken, async function (req, res) {
     if(req.user!=null){
         let following = [];
         let database = await new User().getModel();
-        for(ele of req.user.following){
+        for( ele of req.user.following){
             let name = await database.findById(ele.friend);
             await console.log(name.name)
             await following.push(name.name);
