@@ -37,15 +37,13 @@ app.get('/', authenticateToken, async function (req, res) {
         let database = await new User().getModel();
         for(ele of req.user.following){
             let name = await database.findById(ele.friend);
-            await console.log(name.name)
             await following.push(name.name);
             
         }
-        console.log(following)
     res.render((__dirname+ '/public/views/dashboard/dashboard.ejs'),{user:req.user,following});
     }
     else{
-        res.send('You are not logged in, please login to view content');
+        res.render(__dirname + '/public/views/notLoggedInPage/notloggedin.ejs');
     }
 })
 
