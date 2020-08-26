@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%let i=0%>    
+    <%postdb.forEach(ele=>{%>    
+        <div style="border: solid black 1px;">
+        <div style="font-family:lucida console; margin:1%;">
+        <%if(profilepic[i]!=null){%>
+        <img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="width: 2%"><%}%>&nbsp<%=(by[i].name)%><%i++%>
+    
+    </div>
+        <div style="font-family:lucida console; margin:1%;"><%=ele.post%></div>
+        <%if(ele.photo!=null){%>
+            <img src="data:image/png;base64,<%=ele.photo%>" style="margin:1%;width: 20%"><%}%> 
+        <br>
+        </div><br><br>
+    <%})%>
+    <center>
+    <form action="/post" method="POST" enctype="multipart/form-data">
+       
+        <br><br><br><div style="font-family: lucida console; font-size: 1.5vw; font-weight: bolder;">Create Post</div><br><br>
+        Post:<br><textarea name="post" rows=10 cols=70></textarea><br><br>
+        Upload Image:&nbsp&nbsp<input type ="file" name="postphoto" id="inp" ><br><br>
+        <input type='submit' value="Post">
+    </form>
+</center>
+</body>
+</html>
