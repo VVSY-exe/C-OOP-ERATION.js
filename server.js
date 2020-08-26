@@ -11,16 +11,21 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const User = require('./objects/user.js');
 const Database = require('./objects/database.js');
+const post = require('./objects/post.js');
 const Random = require('./objects/random.js')
 const authenticateToken = require('./middleware/authenticate.js');
 var cookieParser = require('cookie-parser');
 const user = require('./models/user.js');
+const posts = require('./models/posts.js');
 app.use(cookieParser());
 //make express use body-parser's json
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+var fileupload = require('express-fileupload');
+app.use(fileupload());
+var Profilephotos = require('./models/profilephotos.js')
 //set json spaces to 2, used when serving JSON data
 app.set('json spaces', 2);
 //make public a static directory, to serve static files
@@ -40,7 +45,9 @@ app.get('/', authenticateToken, async function (req, res) {
             await following.push(name.name);
             
         }
-    res.render((__dirname+ '/public/views/dashboard/dashboard.ejs'),{user:req.user,following});
+        let profilephoto = await Profilephotos.findOne({"id": req.user._id.toString()})
+        profilephoto = profilephoto.profilephoto;
+    res.render((__dirname+ '/public/views/dashboard/dashboard.ejs'),{user:req.user,following,profilephoto});
     }
     else{
         res.render(__dirname + '/public/views/notLoggedInPage/notloggedin.ejs');
@@ -59,12 +66,17 @@ app.post('/signup', async (req, res) => {
     if (!status) {
         res.send('You failed to register!')
     } else {
+    let pfp = new Profilephotos({
+        id: await status._id,
+        profilephoto: req.files.profilephoto.data.toString("base64")
+    });
+    await pfp.save();
         res.send(`Success!
         <script>
         setTimeout(function () {
            // after 2 seconds
            window.location = "/login";
-        }, 2000)
+        }, 1500)
       </script>`);
     }
 })
@@ -139,6 +151,32 @@ app.post('/addfriends',authenticateToken,async (req,res)=>{
     
 })
 
+app.get('/post',authenticateToken, async (req,res)=>{
+    if(req.user!=null){
+        let user = req.user;
+        let postdb = await posts.find({})
+        let post = [];
+        let by=[];
+        let profilepic=[];
+        for(let i=0;i<postdb.length;i++){
+            profilepic.push(await Profilephotos.findOne({'id':(postdb[i].id)}))
+            post.push(postdb[i].post);
+            by.push(await new User().showdb({'_id': postdb[i].id}))
+            
+        }
+        
+        res.render(__dirname+'/public/views/posts/post.ejs',{postdb,post,by,profilepic,user});
+    }
+    else{
+        res.render(__dirname + '/public/views/notLoggedInPage/notloggedin.ejs');
+    }
+})
+
+app.post('/post',authenticateToken,async (req,res)=>{
+    req.body.id = req.user._id;
+    let newpost = new post(req.body,req);
+    res.redirect('/post');
+})
 
 app.get('/keepalive', (req,res)=>{
     res.send('Ping Recieved '+Date.now())
