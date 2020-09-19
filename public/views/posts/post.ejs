@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <%let i=0%>    
-    <%postdb.forEach(ele=>{%>    
+    <%post.reverse();profilepic.reverse();by.reverse()%>
+    <%post.forEach(ele=>{%>    
         <div style="border: solid black 1px;">
         <div style="font-family:lucida console; margin:1%;">
         <%if(profilepic[i]!=null){%>
@@ -18,6 +20,16 @@
         <%if(ele.photo!=null){%>
             <img src="data:image/png;base64,<%=ele.photo%>" style="margin:1%;width: 20%"><%}%> 
         <br>
+        <div style="margin:1%" id="<%=ele._id%>">👍<%=ele.likes.length%></div>
+        <div style="margin:1%" id="c<%=ele._id%>"><a href="/comments/<%=ele._id%>">💬<%=ele.comments.length%></a></div>
+        <script>
+            document.getElementById('<%=ele._id%>').onclick = function()  {  
+                document.getElementById('<%=ele._id%>').innerText = "👍<%=ele.likes.length+1%>"   
+                $.post('/likepost/<%=ele._id%>', function(data, status){   
+                })
+                document.getElementById('<%=ele._id%>').onclick= ()=>{}
+            }
+        </script>
         </div><br><br>
     <%})%>
     <center>
