@@ -13,7 +13,16 @@ mongoose.connect(process.env.db, { useNewUrlParser: true, useUnifiedTopology: tr
 let posts = new Schema({
     photo: String,
     id: String,
-    post: String
+    post: String,
+    likes: [
+        {
+            by: String
+        }
+    ],
+    comments: [{
+        comment: String,
+        by: String
+    }]
 })
 
 
