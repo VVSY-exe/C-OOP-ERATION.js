@@ -34,7 +34,6 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 
-
 //GET request handler for homepage
 app.get('/', authenticateToken, async function (req, res) {
     if (req.user != null) {
@@ -132,32 +131,55 @@ app.get('/showdb', async (req, res) => {
     res.send("User Database:\n\n" + JSON.stringify(db, null, "\t"))
 })
 
-
-app.get('/addfriends', authenticateToken, async (req, res) => {
-    if (req.user != null) {
-        let userClass = new User();
-        let database = await userClass.showdb();
-        res.render((__dirname + '/public/views/friends/followfriends.ejs'), {
-            user: req.user,
-            database,
-            makeid: new Random().randomString()
+app.get('/users', authenticateToken, async (req,res)=>{
+    if(req.user != null){
+        let user = req.user;
+        let users = await new User().showdb();
+        let profilepic = []
+        users = users.filter(function( obj ) {
+            return obj.name !== user.name;
         });
-    } else {
-        res.send('You are not logged in, please login to view content');
+        let following = []
+        for (user of users){
+            let flag = 0;
+            for(follows of req.user.following){
+                if(follows.friend==user._id){
+                    following.push(true);
+                    flag=1;
+                    break;
+                }
+            }
+            if(flag===0){
+                following.push(false);
+            }
+        }
+        
+        for(user of users){
+            profilepic.push( await Profilephotos.findOne({'id': user._id}))
+            
+        }
+        
+        res.render(__dirname + '/public/views/users/users.ejs',{users,user: req.user,profilepic,following});
     }
 })
 
-app.post('/addfriends', authenticateToken, async (req, res) => {
-    let friends = Object.values(req.body);
-    let user = req.user;
-    friends.forEach(friend => {
-        user.following.push({
-            friend
-        });
-    })
-    await user.save();
-    res.redirect('/');
-
+app.post('/follow/:id', authenticateToken, async (req, res) => {
+    if (req.user != null) {
+        let user = req.user;
+        let followuser = await new User().showdb({'_id': req.params.id});
+        if (followuser != null) {
+            followuser.followers.push({'friend': user._id});
+            await followuser.save();
+            user.following.push({'friend': followuser._id});
+            await user.save();
+        }
+        else {
+            res.send("User does not exist.")
+        }
+    }
+    else {
+        res.redirect('/login')
+    }
 })
 
 app.get('/post', authenticateToken, async (req, res) => {
@@ -279,6 +301,7 @@ app.post('/postcomment/:id', authenticateToken, async (req, res) => {
         res.redirect(__dirname + '/public/views/login/login.ejs')
     }
 })
+
 
 app.get('/keepalive', (req, res) => {
     res.send('Ping Recieved ' + Date.now())

@@ -15,10 +15,10 @@ let User = new Schema({
     password: {type: String, required: true},
     username: {type: String, required: true},
     following: [{
-        friend: String
+        friend: {type: String, unique: true}
     }],
     followers: [{
-        friend: String
+        friend: {type: String, unique: true}
     }],
     tokens: [{
     token: {type: String},
