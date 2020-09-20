@@ -40,6 +40,7 @@ app.get('/', authenticateToken, async function (req, res) {
     if (req.user != null) {
         let following = [];
         let database = await new User().getModel();
+        let post = await posts.find({'id': req.user._id});
         for (ele of req.user.following) {
             let name = await database.findById(ele.friend);
             await following.push(name.name);
@@ -52,7 +53,8 @@ app.get('/', authenticateToken, async function (req, res) {
         res.render((__dirname + '/public/views/dashboard/dashboard.ejs'), {
             user: req.user,
             following,
-            profilephoto
+            profilephoto,
+            post,
         });
     } else {
         res.render(__dirname + '/public/views/notLoggedInPage/notloggedin.ejs');
@@ -222,13 +224,40 @@ app.post('/likepost/:id', authenticateToken, async (req, res) => {
     }
 })
 
+app.post('/removelike/:id',authenticateToken, async(req,res)=>{
+    if(req.user){
+        let postid = req.params.id;
+        let post = await posts.findOne({'_id': postid});
+        if(post!=null){
+            let index =  post.likes.indexOf(req.user._id);
+            if(index>-1){
+                post.likes.splice(index,1);
+            }
+            await post.save();
+        }
+        else{
+            res.send('Invalid Post ID');
+        }
+    }
+    else{
+        res.redirect('/');
+    }
+})
+
 app.get('/comments/:id', async (req, res) => {
     let post = await posts.findOne({
         '_id': req.params.id
     });
-    let user = await new User().showdb({
-        '_id': post.comments.by
+    let by = []
+    let user = []
+    post.comments.forEach(ele => {
+        by.push(ele.by);
     })
+    for(ele of by) {
+        user.push(await new User().showdb({'_id': ele}));
+
+    }
+    console.log('user', user)
     res.render(__dirname + '/public/views/comments/comments.ejs', {
         post,
         user
