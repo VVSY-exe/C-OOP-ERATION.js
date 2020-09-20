@@ -8,34 +8,32 @@ body{
 
 
 #whitebox{
-    position: relative;
-
-width: 673px;
-height: 392.74px;
+position: relative;
+width: 30%;
+height: 280px;
 margin: 0 auto;
-margin-top: 3%;
+margin-top: 10%;
 background: #FFFFFF;
-box-shadow: 3px 65px 141px -67px #002448;
-border-radius: 151px;
+box-shadow: 10px 65px 100px -67px #002448;
+border-radius: 100px;
 text-align: center;
-
 }
 
 .buttons {
 position: relative;
-width: 241.54px;
-height: 86.66px;
+width: 30%;
+height: 15%;
 
 border: none;
 background: #FF6B00;
 box-shadow: 0px 1px 25px -3px #FF6B00;
-border-radius: 38px;
+border-radius: 30px;
 font-family: Oxygen Mono;
     font-style: normal;
-    font-weight: normal;
-    font-size: 30px;
-    line-height: 39px;
-margin-top: 70px;
+    font-weight: bold;
+    font-size: 1.2vw;
+    line-height: 10%;
+margin-top: 13%;
 
 }
 
@@ -47,7 +45,7 @@ margin-top: 70px;
 .header {
     overflow: hidden;
     background-color: #f1f1f1;
-    padding: 20px 10px;
+    padding: 1% 1%;
     background: #002448;
     box-shadow: 3px 7px 94px 6px #002448;
   }
@@ -59,12 +57,12 @@ margin-top: 70px;
     text-align: center;
  
     text-decoration: none;
-    font-size: 18px;
+    font-size: 1vw;
     font-family: Oxygen Mono;
     font-style: normal;
-    font-weight: normal;
+    font-weight: bolder;
     width: 114px;
-    line-height:  41px;
+    line-height:  220%;
 
     background: #FF6B00;
 box-shadow: 0px 1px 25px #FF6B00;
