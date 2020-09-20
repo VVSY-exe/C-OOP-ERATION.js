@@ -12,6 +12,7 @@
     <%let i=0%>
     <%post.comments.forEach(ele=>{%>
         <div><%=user[i].name%>: <%=ele.comment%></div>
+        <%i++;%>
     <%})%>
     <form method="POST" action="/postcomment/<%=post._id%>">
     <textarea name="comment" row="30" cols="50"></textarea>
