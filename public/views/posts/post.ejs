@@ -27,7 +27,11 @@
                 document.getElementById('<%=ele._id%>').innerText = "👍<%=ele.likes.length+1%>"   
                 $.post('/likepost/<%=ele._id%>', function(data, status){   
                 })
-                document.getElementById('<%=ele._id%>').onclick= ()=>{}
+                document.getElementById('<%=ele._id%>').onclick= ()=>{
+                    document.getElementById('<%=ele._id%>').innerText = "👍<%=ele.likes.length%>"
+                    $.post('/removelike/<%=ele._id%>', function(data, status){
+                    })
+                }
             }
         </script>
         </div><br><br>
