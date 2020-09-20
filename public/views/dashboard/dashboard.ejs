@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/views/dashboard/style.css">
+  <title>Document</title>
+  <script>
+    /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+    function myFunction() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+  </script>
+
+</head>
+
+<body>
+  <!-- Load an icon library to show a hamburger menu (bars) on small screens -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <div class="topnav" id="myTopnav">
+    <a href="/logout" id="username">Logout</a>
+    <a href="/" id="username"><%=user.name%></a>
+    <a href="/" class="active">Home</a>
+    <a href="/users">Follow</a>
+    <a href="/post">Timeline</a>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+  <div id="leftset"><img src="data:image/png;base64,<%=profilephoto%>" style="margin-left:25%; margin-top:5%;width:20vw;height:20vw;object-fit:cover;" align="left">
+    <br><br><br>
+    <p id="name"><%=user.name%></p>
+    <br><br>
+    <p id="details">Following:<%=user.following.length%> &nbsp&nbsp&nbsp&nbspFollowers:<%=user.followers.length%></p>
+  </div>
+<br><br>
+Your Posts:
+<br><br>
+<div>
+    <%let i=0%>
+    <%post.reverse();%>
+    <%post.forEach(ele=>{%>
+    <div style="border: solid black 1px;">
+      <div style="font-family:lucida console; margin:1%;">
+        <%if(profilephoto!=null){%>
+        <img src="data:image/png;base64,<%=profilephoto%>" style="width: 2%"><%}%>&nbsp<%=(user.name)%><%i++%>
+
+      </div>
+      <div style="font-family:lucida console; margin:1%;"><%=ele.post%></div>
+      <%if(ele.photo!=null){%>
+      <img src="data:image/png;base64,<%=ele.photo%>" style="margin:1%;width: 20%"><%}%> 
+        <br>
+        </div><br><br>
+    <%})%>
+    </div>
+
+</body>
+
+</html>

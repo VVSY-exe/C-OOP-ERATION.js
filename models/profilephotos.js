@@ -10,26 +10,15 @@ mongoose.connect(process.env.db, { useNewUrlParser: true, useUnifiedTopology: tr
 
 /*Create a new model/object by the name of User
  *whenever a new user signs up this creates a new user object in the database*/
-let User = new Schema({
-    name: {type: String, required: true},
-    password: {type: String, required: true},
-    username: {type: String, required: true},
-    following: [{
-        friend: {type: String, unique: true}
-    }],
-    followers: [{
-        friend: {type: String, unique: true}
-    }],
-    tokens: [{
-    token: {type: String},
-    _id: 0
-    }]
+let Profilephotos = new Schema({
+    profilephoto: String,
+    id: String
 })
 
 
 
 //create a mongodb model with the name 'User' and Schema User
-let user = mongoose.model('User', User);
+let profilephotos = mongoose.model('profilephotos', Profilephotos);
 
 //export the model to use it in main files
-module.exports = user;
+module.exports = profilephotos;

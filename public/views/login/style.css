@@ -1,0 +1,15 @@
+body{
+    background-color: azure;
+    margin: 20%;
+}
+
+form {
+    text-align: center;
+    font-size: 1.5vw;
+    font-family: 'Lucida console'; 
+}
+
+input form{
+    font-family: inherit;
+    font-size: 1.5vw;
+}

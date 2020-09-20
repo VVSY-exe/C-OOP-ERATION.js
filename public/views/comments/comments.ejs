@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%if(post.photo!=null){%>
+    <img src="data:image/png;base64,<%=post.photo%>">
+    <%}%>
+    <%let i=0%>
+    <%post.comments.forEach(ele=>{%>
+        <div><%=user[i].name%>: <%=ele.comment%></div>
+        <%i++;%>
+    <%})%>
+    <form method="POST" action="/postcomment/<%=post._id%>">
+    <textarea name="comment" row="30" cols="50"></textarea>
+    <input type="Submit" value="Comment">
+    </form>
+</body>
+</html>

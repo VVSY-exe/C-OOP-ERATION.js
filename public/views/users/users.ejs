@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/views/users/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+        function myFunction() {
+          var x = document.getElementById("myTopnav");
+          if (x.className === "topnav") {
+            x.className += " responsive";
+          } else {
+            x.className = "topnav";
+          }
+        }
+      </script>
+    
+</head>
+<body>
+      <!-- Load an icon library to show a hamburger menu (bars) on small screens -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <div class="topnav" id="myTopnav">
+    <a href="/logout" id="username">Logout</a>
+    <a href="/" id="username"><%=user.name%></a>
+    <a href="/" class="active">Home</a>
+    <a href="/users">Follow</a>
+    <a href="/post">Timeline</a>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+    
+    <%let i=0%>
+     <br>
+    <%users.forEach(ele=>{%>
+        <div id="user"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="height:3vw;width:3vw;vertical-align:middle;"><%=ele.name%>
+        <button id="visitprofile"><a href="/profile/<%=ele._id%>">Visit Profile</a></button> 
+        <%if(following[i]===false){%>
+        <button id="follow<%=ele._id%>">Follow</button>
+            <script>
+                document.getElementById('follow<%=ele._id%>').onclick = () => {
+                    document.getElementById('follow<%=ele._id%>').innerText = "Following";
+                    $.post('/follow/<%=ele._id%>',function(data,err){
+                    })
+                    document.getElementById('follow<%=ele._id%>').onclick = ()=>{}
+                     
+                }
+            </script>
+            
+        <%}else{%>
+            <button id="follow<%=ele._id%>">Following</button>
+         <%}%>
+         <%i++%>
+    </div>
+        <%})%>
+</body>
+</html>
