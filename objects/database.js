@@ -10,7 +10,7 @@ class Database {
         }
     }
 
-    async showdb(classname, data = {}) {
+    async showdb(classname, data = {}, all=false) {    
         if (classname.toLowerCase() === 'user') {
             classname = user;
         } 
@@ -28,7 +28,12 @@ class Database {
         if (JSON.stringify(data) === "{}") {
             return await classname.find({});
         } else {
-            return await classname.findOne(data);
+            if (all==false) {
+                return await classname.findOne(data);
+            }
+            else if(all==true) {
+                return await classname.find(data);
+            }
         }
 
     }
