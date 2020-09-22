@@ -1,5 +1,6 @@
-const Database = require("./database");
+const Database = require("./database.js");
 const posts = require('../models/posts.js');
+const User = require('./user.js');
 //multiple inheritance
 //User inherits Database, and post inherits user so post inherits database
 class post extends Database {
@@ -56,6 +57,18 @@ class post extends Database {
             'by': req.user._id
         });
         await post.save()
+    }
+
+    async getComment(req){
+        let post = await this.showdb('post',{'_id': req.params.id});
+        let by = [],user = [];
+        post.comments.forEach(ele => {
+            by.push(ele.by);
+        })
+        for (const ele of by) {
+            user.push(await this.showdb('user', {'_id': ele}));
+        }
+    return {post,user}
     }
 
 }
