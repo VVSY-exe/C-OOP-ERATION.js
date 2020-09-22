@@ -118,6 +118,79 @@ class User extends Database {
         return {post,by,profilepic};
     }
 
+
+    async getDashboard(req){
+        let following = [];
+        let database = new User()
+        let post = await this.showdb('post',{'id': req.user._id},true);  //polymorphism
+        for (const ele of req.user.following) {
+            let name = await database.showdb('User', {'_id': ele.friend});
+            following.push(name.name);
+
+        }
+        let profilephoto = await this.showdb('profilephotos',{"id": req.user._id.toString()})
+        profilephoto = profilephoto.profilephoto;
+    return {
+       post,
+       user: req.user,
+       profilephoto,
+       following     
+    }
+    }
+    
+    async getFollowingList(req){
+        let user = req.user;
+        let users = await new User().showdb('User');
+        let profilepic = []
+        users = users.filter(function (obj) {
+            return obj.name !== user.name;
+        });
+        let following = []
+        for (let user of users) {
+            let flag = 0;
+            for (let follows of req.user.following) {
+                if (follows.friend == user._id) {
+                    following.push(true);
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag === 0) {
+                following.push(false);
+            }
+        }
+        for (let user of users) {
+            profilepic.push(await new Profilephotos().showdb('Profilephotos',{
+                'id': user._id
+            }))
+        }
+        return {
+            users,
+            user: req.user,
+            profilepic,
+            following
+        }
+    }
+
+    async followUser(req,res){
+        let user = req.user;
+        let followuser = await new User().showdb('User', {
+            '_id': req.params.id
+        });
+        if (followuser != null) {
+            followuser.followers.push({
+                'friend': user._id
+            });
+            await followuser.save();
+            user.following.push({
+                'friend': followuser._id
+            });
+            await user.save();
+        } else {
+            res.send("User does not exist.")
+        }
+    }
+
 }
 
 module.exports = User;
