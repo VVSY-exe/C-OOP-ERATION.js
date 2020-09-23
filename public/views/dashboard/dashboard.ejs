@@ -1,65 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/views/dashboard/style.css">
-  <title>Document</title>
-  <script>
-    /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
-    function myFunction() {
-      var x = document.getElementById("myTopnav");
-      if (x.className === "topnav") {
-        x.className += " responsive";
-      } else {
-        x.className = "topnav";
-      }
-    }
-  </script>
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/views/dashboard/styles.min.css">
 </head>
 
-<body>
-  <!-- Load an icon library to show a hamburger menu (bars) on small screens -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <div class="topnav" id="myTopnav">
-    <a href="/logout" id="username">Logout</a>
-    <a href="/" id="username"><%=user.name%></a>
-    <a href="/" class="active">Home</a>
-    <a href="/users">Follow</a>
-    <a href="/post">Timeline</a>
-    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-      <i class="fa fa-bars"></i>
-    </a>
-  </div>
-  <div id="leftset"><img src="data:image/png;base64,<%=profilephoto%>" style="margin-left:25%; margin-top:5%;width:20vw;height:20vw;object-fit:cover;" align="left">
-    <br><br><br>
-    <p id="name"><%=user.name%></p>
-    <br><br>
-    <p id="details">Following:<%=user.following.length%> &nbsp&nbsp&nbsp&nbspFollowers:<%=user.followers.length%></p>
-  </div>
-<br><br>
-Your Posts:
-<br><br>
-<div>
-    <%let i=0%>
-    <%post.reverse();%>
-    <%post.forEach(ele=>{%>
-    <div style="border: solid black 1px;">
-      <div style="font-family:lucida console; margin:1%;">
-        <%if(profilephoto!=null){%>
-        <img src="data:image/png;base64,<%=profilephoto%>" style="width: 2%"><%}%>&nbsp<%=(user.name)%><%i++%>
-
-      </div>
-      <div style="font-family:lucida console; margin:1%;"><%=ele.post%></div>
-      <%if(ele.photo!=null){%>
-      <img src="data:image/png;base64,<%=ele.photo%>" style="margin:1%;width: 20%"><%}%> 
-        <br>
-        </div><br><br>
-    <%})%>
+<body style="background: rgb(234,226,226);">
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
+        <div class="container"><a class="navbar-brand" href="#">@<%=user.username%></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse"
+                id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="/post">Timeline</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row"><img class="img-fluid" style="background: url('https://cdn.bootstrapstudio.io/placeholders/1400x800.png');" src="data:image/png;base64,<%=profilephoto%>" width="200" height="200" alt="profile picture" id="pfp" />
+        <div class="col"><h1 id="username"><%=user.name%></h1><button class="btn btn-primary" type="button" style="background: rgb(180,41,22);margin-left: 10%;margin-top: 5%;margin-bottom: 5%;margin-right: 15%;width: 22%;height: 15%;padding: 0px;">Followers: <%=user.followers.length%></button><button class="btn btn-primary"
+                type="button" style="background: rgb(180,41,22);width: 22%;height: 15%;padding: 0px;">Following: <%=user.following.length%></button></div>
     </div>
-
+    <hr class="d-lg-flex" style="font-size: 10%;">
+    <div>
+        <div class="container">
+          <%let i=0%>
+                    <%post.reverse();%>
+                    <%post.forEach(ele=>{%>  
+          <div class="row">
+            <%if(i==0){%>
+            <div class="col-md-4" style="max-width: 20%;background: #fef2f2;padding: 11px;text-align: center;">
+                    <div></div>
+                    <p style="padding: 4px;text-align: center;font-weight: bolder;">@<%=user.username%></p>
+                    <hr>
+                    <p>Followers: <%=user.followers.length%></p>
+                    <p>Following: <%=user.following.length%></p>
+                    <hr><button class="btn btn-primary" type="button" style="text-align: center;padding: 5px;  background-color:rgb(201, 44, 44);"><a href="/users" style="text-decoration: none; color:#ffffff">Follow Users</a></button></div>
+            <%} else{%>     
+                <div class="col-md-4" style="max-width: 20%;padding: 11px;text-align: center;">
+                    <div></div>
+                    <p style="padding: 4px;text-align: center;"></p>
+                    <p></p>
+                    <p></p>
+                    </div>
+            <%}%>
+                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #ffffff;margin: 0px;margin-left: 3%;margin-right: 3%;">
+                    <div class="row" style="background: #d7c5c5;">
+                        <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilephoto%>" style="width: 42%;height: 61%;"></div>
+                        <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
+                            <p style="text-align: left;font-size: 17px;">@<%=user.username%></p>
+                            <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;16:00 23rd September</p>
+                        </div>
+                    </div>
+                    <p style="text-align: left;"><%=ele.post%>&nbsp;<br></p><%i++%>
+                    <hr>
+                    <%if(ele.photo!=null){%>
+                    <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: 50%;height: 50%;text-align: center;margin-top: 7px; margin-bottom: 10px;">
+                    <%}%>
+                </div>
+            </div>
+            <br><br>    
+          <%})%>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
