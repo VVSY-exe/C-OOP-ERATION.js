@@ -61,11 +61,10 @@ app.get('/signup', (req, res) => {
 //object oriented
 app.post('/signup', async (req, res) => {
     const user = await new User(req.body);
-    let status = await user.createUser();
+    let status = await user.createUser(req);
     if (!status) {
-        res.send('You failed to register!')
+        res.send('You failed to register! Please make sure you entered all the data.')
     } else {
-        await new Profilephotos().assignProfilePhoto(req, status);
         res.send(`Success!
         <script>
         setTimeout(function () {
@@ -150,11 +149,15 @@ app.post('/follow/:id', authenticateToken, async (req, res) => {
 //Implemented OOPs
 app.get('/post', authenticateToken, async (req, res) => {
     if (req.user != null) {
+        let userdb= new User().showdb('user',{});
+        userdb = JSON.stringify(userdb);
         let timeline = await new User().getTimeline(req.user);
         res.render(__dirname + '/public/views/posts/post.ejs', {
             post: timeline['post'],
             by: timeline['by'],
-            profilepic: timeline['profilepic']
+            profilepic: timeline['profilepic'],
+            user: req.user,
+            userdb
         });
     } else {
         res.render(__dirname + '/public/views/notLoggedInPage/notloggedin.ejs');

@@ -21,16 +21,18 @@ class User extends Database {
     }
 
 
-    async createUser() {
+    async createUser(req) {
 
         let bool = await this.findExisting(this.getData().username); //calls the findExisting function of Database class to check if username already exists
         //*advantage of inheritance* 
         //the function is directly accessible to the User class because of inheritance
-        if (bool === null) {
+        if (bool === null){
             let flag = 1;
             let newUser = new user(this.getData());
             let cryptedPassword = CryptoJS.AES.encrypt(this.getData().password, secretKey)
             newUser.password = cryptedPassword;
+            if (req.files!=null){
+            await new Profilephotos().assignProfilePhoto(req, newUser);  
             await newUser.save((err, user) => {
                 if (err) {
                     console.log("An error occured while saving your data:\n" + err);
@@ -38,13 +40,17 @@ class User extends Database {
                 } else {
                     console.log("A new user has been registered. The Data is as follows:\n" + newUser);
                 }
-            });;
+            });
             if (flag === 1) {
                 return newUser;
             } else {
                 return null;
             }
-        } else {
+        }
+        else {
+            return(null)
+        }
+     } else {
             return null;
         }
 
