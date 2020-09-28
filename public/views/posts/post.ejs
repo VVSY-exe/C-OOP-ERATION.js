@@ -51,7 +51,7 @@
                             <p></p>
                         </div>    
                     <%}%>
-                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #ffffff;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 5%;">
+                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #ffffff;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 10%;">
                     <div class="row" style="background: #d7c5c5;">
                         <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
                         <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
@@ -62,26 +62,26 @@
                     <p style="text-align: left;"><%=ele.post%>&nbsp;<br></p>
                     <hr>
                     <%if(ele.photo!=null){%>
-                    <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: 237px;height: 248px;text-align: center;margin-top: 7px;margin-bottom: 10px;">
+                    <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
                     <%}%>
-                    <div style="margin:1%;text-align: left;" id="<%=ele._id%>">👍<%=ele.likes.length%></div>
-                    <div style="margin:1%;text-align: left;" id="c<%=ele._id%>"><a href="/comments/<%=ele._id%>">💬<%=ele.comments.length%></a></div>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:left;" id="<%=ele._id%>">👍<%=ele.likes.length%></div>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left;" id="c<%=ele._id%>"><a href="/comments/<%=ele._id%>">💬<%=ele.comments.length%></a></div>
                     <script>
-                        document.getElementById('<%=ele._id%>').onclick = function()  {  
-                            document.getElementById('<%=ele._id%>').innerText = "👍<%=ele.likes.length+1%>"   
+                        document.getElementById('<%=ele._id%>').onclick = function()  {     
                             $.post('/likepost/<%=ele._id%>', function(data, status){   
                             })
+                            document.getElementById('<%=ele._id%>').innerText = "👍<%=ele.likes.length+1%>"
                             document.getElementById('<%=ele._id%>').onclick= ()=>{
-                                document.getElementById('<%=ele._id%>').innerText = "👍<%=ele.likes.length%>"
                                 $.post('/removelike/<%=ele._id%>', function(data, status){
                                 })
+                                document.getElementById('<%=ele._id%>').innerText = "👍<%=ele.likes.length%>"
                             }
                         }
                     </script>
             </div>
             <br><br> 
                 <%if(j==0){%>
-                <div class="col" style="background: #ffffff;">
+                <div class="col" style="background: #ffffff; margin-bottom: 5%;">
                     <div></div>
                     <p><strong>Friends</strong></p>
                     <hr>
@@ -92,8 +92,6 @@
                     <p style="margin-bottom: -7px;margin-top: -7px;">@user3</p>
                     <hr>
                     <p style="margin-bottom: -7px;margin-top: -7px;">@user4</p>
-                    <hr>
-                    <p style="margin-bottom: -7px;margin-top: -7px;">@user5</p>
                 </div>
                 <br><br>
                 <%j++;%>
