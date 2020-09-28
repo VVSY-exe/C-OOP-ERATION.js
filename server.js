@@ -160,7 +160,7 @@ app.get('/post', authenticateToken, async (req, res) => {
             userdb
         });
     } else {
-        res.render(__dirname + '/public/views/notLoggedInPage/notloggedin.ejs');
+        res.redirect('/');
     }
 })
 
