@@ -207,7 +207,6 @@ app.get('/comments/:id',authenticateToken, async (req, res) => {
     if(req.user!=null){
     let obj = await new Post().getComment(req);
     let author = await new User().showdb('user',{'_id': obj.post.id})
-    console.log(obj.post,obj.user)
     res.render(__dirname + '/public/views/comments/comments.ejs', {post: obj.post,user: obj.user,requser: req.user,author});
     }
     else{
