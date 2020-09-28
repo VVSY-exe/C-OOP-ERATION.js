@@ -37,10 +37,27 @@ class post extends Database {
     async likePost(req,res){
         let postid = req.params.id;
         let post = await this.showdb('Post',{'_id': postid});
+        let flag=1;
         if (post != null) {
-            post.likes.push({
-                'by': req.user._id
-            });
+            if(post.likes.length===0) {
+                post.likes.push({
+                    'by': req.user._id
+                }); 
+            flag=0;
+            }
+        else{
+        for(let ele of post.likes){
+            if(ele.by==req.user._id){
+                flag=0
+                break;
+            }
+        }
+        }
+            if(flag==1){
+                post.likes.push({
+                    'by': req.user._id
+                });
+            }
             await post.save();
             console.log("Liked Post Successfully");
             res.redirect('/post');
