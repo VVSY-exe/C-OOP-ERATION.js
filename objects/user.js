@@ -108,7 +108,7 @@ class User extends Database {
 
         for (let i = 0; i < postdb.length; i++) {
             for (let j = 0; j < user.following.length; j++) {
-                if (user.following[j].friend === postdb[i].id) {
+                if (user.following[j].friend === postdb[i].id || user._id == postdb[i].id) {
                     flag = 1;
                     break;
                 }
