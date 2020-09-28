@@ -47,7 +47,7 @@ app.get('/', authenticateToken, async function (req, res) {
             post: obj.post,
         });
     } else {
-        res.render(__dirname + '/public/views/notLoggedInPage/notloggedin.ejs');
+        res.render(__dirname + '/public/views/login/login.ejs');
     }
 })
 
