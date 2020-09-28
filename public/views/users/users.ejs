@@ -1,60 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/views/users/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
-        function myFunction() {
-          var x = document.getElementById("myTopnav");
-          if (x.className === "topnav") {
-            x.className += " responsive";
-          } else {
-            x.className = "topnav";
-          }
-        }
-      </script>
-    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Users</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="views/users/styles.min.css">
 </head>
-<body>
-      <!-- Load an icon library to show a hamburger menu (bars) on small screens -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <div class="topnav" id="myTopnav">
-    <a href="/logout" id="username">Logout</a>
-    <a href="/" id="username"><%=user.name%></a>
-    <a href="/" class="active">Home</a>
-    <a href="/users">Follow</a>
-    <a href="/post">Timeline</a>
-    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-      <i class="fa fa-bars"></i>
-    </a>
-  </div>
-    
+
+<body style="color: rgb(218,199,199);background: rgb(234,226,226);">
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
+        <div class="container"><a class="navbar-brand" href="#">@<%=user.username%></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse"
+                id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/post">Timeline</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <%let i=0%>
-     <br>
     <%users.forEach(ele=>{%>
-        <div id="user"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="height:3vw;width:3vw;vertical-align:middle;"><%=ele.name%>
-        <button id="visitprofile"><a href="/profile/<%=ele._id%>">Visit Profile</a></button> 
-        <%if(following[i]===false){%>
-        <button id="follow<%=ele._id%>">Follow</button>
-            <script>
-                document.getElementById('follow<%=ele._id%>').onclick = () => {
-                    document.getElementById('follow<%=ele._id%>').innerText = "Following";
-                    $.post('/follow/<%=ele._id%>',function(data,err){
-                    })
-                    document.getElementById('follow<%=ele._id%>').onclick = ()=>{}
-                     
-                }
-            </script>
-            
-        <%}else{%>
-            <button id="follow<%=ele._id%>">Following</button>
-         <%}%>
-         <%i++%>
+    <div class="row user-list" style="min-width: 100%;max-width: 100%;width: 100%;height: 100%;min-height: 100%;max-height: 100%;margin-left:15%;margin-top:2%;margin-bottom: 0%;">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 user-item">
+        <div class="user-container"><a class="user-avatar" href="#"><img style="height:50px;width:50px;" src="data:image/png;base64,<%=profilepic[i].profilephoto%>" width="48" height="48" alt="Profile Pic" /></a>
+            <p class="user-name"><a href="#"><%=ele.name%></a><span>@<%=ele.username%></span></p></div>
     </div>
-        <%})%>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 user-item">
+       <button class="btn btn-link social-outline" style="color:#3097d1;padding-right:8px;padding-left:8px;padding-top:4px;padding-bottom:3px;" type="button"><i class="icon-user-follow" style="color:#3097d1;vertical-align:center"><a href="/profile/<%=ele._id%>"> View Profile</i></a></button>
+       <%if(following[i]===false){%> 
+       <button class="btn btn-link social-outline" id="follow<%=ele._id%>" style="color:#3097d1;padding-right:8px;padding-left:8px;padding-top:4px;padding-bottom:3px;" type="button"><i class="icon-user-follow" style="color:#3097d1;"></i> Follow</button>
+       <script>
+        document.getElementById('follow<%=ele._id%>').onclick = () => {
+            document.getElementById('follow<%=ele._id%>').innerText = "Following";
+            $.post('/follow/<%=ele._id%>',function(data,err){
+            })
+            document.getElementById('follow<%=ele._id%>').onclick = ()=>{} 
+        }
+    </script>
+    <%}else{%>
+        <button class="btn btn-link social-outline" id="follow<%=ele._id%>" style="color:#3097d1;padding-right:8px;padding-left:8px;padding-top:4px;padding-bottom:3px;" type="button"><i class="icon-user-follow" style="color:#3097d1;"></i> Following</button>
+     <%}%>
+     <%i++%>
+    </div>
+</div>
+<%})%>
+<br>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
