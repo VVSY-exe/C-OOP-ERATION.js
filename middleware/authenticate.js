@@ -11,7 +11,7 @@ async function authenticateToken(req,res,next){
     
     try{
         const verified = jwt.verify(token,process.env.JWT_KEY)
-        let users = await new User().showdb();
+        let users = await new User().showdb('User');
         let tokens = [];
         users.forEach(user=>{
             user.tokens.forEach(t=>{
@@ -20,7 +20,7 @@ async function authenticateToken(req,res,next){
         })
         let existing = tokens.find(t=>t===token);
         if(existing){
-        req.user = await new User().showdb({'_id': verified});
+        req.user = await new User().showdb('User',{'_id': verified});
         next();    
         }
         else{

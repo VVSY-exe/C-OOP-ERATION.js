@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const User = require('./objects/user.js');
 const Database = require('./objects/database.js');
-const post = require('./objects/post.js');
+const Post = require('./objects/post.js');
 const Random = require('./objects/random.js')
 const authenticateToken = require('./middleware/authenticate.js');
 var cookieParser = require('cookie-parser');
@@ -25,7 +25,8 @@ app.use(bodyParser.urlencoded({
 }));
 var fileupload = require('express-fileupload');
 app.use(fileupload());
-var Profilephotos = require('./models/profilephotos.js')
+var Profilephotos = require('./objects/profilephotos.js');
+const post = require('./objects/post.js');
 //set json spaces to 2, used when serving JSON data
 app.set('json spaces', 2);
 //make public a static directory, to serve static files
@@ -35,48 +36,35 @@ app.set('view engine', 'ejs');
 
 
 //GET request handler for homepage
+//OOPs impelemented
 app.get('/', authenticateToken, async function (req, res) {
     if (req.user != null) {
-        let following = [];
-        let database = await new User().getModel();
-        let post = await posts.find({'id': req.user._id});
-        for (ele of req.user.following) {
-            let name = await database.findById(ele.friend);
-            await following.push(name.name);
-
-        }
-        let profilephoto = await Profilephotos.findOne({
-            "id": req.user._id.toString()
-        })
-        profilephoto = profilephoto.profilephoto;
+        let obj = await new User().getDashboard(req);
         res.render((__dirname + '/public/views/dashboard/dashboard.ejs'), {
-            user: req.user,
-            following,
-            profilephoto,
-            post,
+            user: obj.user,
+            following: obj.following,
+            profilephoto: obj.profilephoto,
+            post: obj.post,
         });
     } else {
-        res.render(__dirname + '/public/views/notLoggedInPage/notloggedin.ejs');
+        res.render(__dirname + '/public/views/login/login.ejs');
     }
 })
 
 //GET request handler for Signup Page
+//OOPs not needed
 app.get('/signup', (req, res) => {
     res.status(200).render(__dirname + '/public/views/signup/signup.ejs');
 })
 
 //POST request handler for Signup, adds an User to the DB by creating an Object
+//object oriented
 app.post('/signup', async (req, res) => {
     const user = await new User(req.body);
-    let status = await user.createUser();
+    let status = await user.createUser(req);
     if (!status) {
-        res.send('You failed to register!')
+        res.send('You failed to register! Please make sure you entered all the data.')
     } else {
-        let pfp = new Profilephotos({
-            id: await status._id,
-            profilephoto: req.files.profilephoto.data.toString("base64")
-        });
-        await pfp.save();
         res.send(`Success!
         <script>
         setTimeout(function () {
@@ -103,6 +91,7 @@ app.post('/login', async (req, res) => {
 
 })
 
+//OOPs implemented
 app.get('/logout', authenticateToken, async (req, res) => {
     if (req.user != null) {
         await new User().logout(req.user, req, res); //polymorphism
@@ -112,6 +101,7 @@ app.get('/logout', authenticateToken, async (req, res) => {
     }
 })
 
+//OOPs implemented
 app.get('/logoutall', authenticateToken, async (req, res) => {
     if (req.user != null) {
         await new User().logout(req.user, req, res, true); //polymorphism
@@ -124,184 +114,116 @@ app.get('/logoutall', authenticateToken, async (req, res) => {
 
 
 app.get('/showdb', async (req, res) => {
-    let request = await new Database();
-    let db = await request.showdb({});
+    let db = await new User().showdb('User', {});
     res.status(200)
     res.type('json');
     res.send("User Database:\n\n" + JSON.stringify(db, null, "\t"))
 })
 
-app.get('/users', authenticateToken, async (req,res)=>{
-    if(req.user != null){
-        let user = req.user;
-        let users = await new User().showdb();
-        let profilepic = []
-        users = users.filter(function( obj ) {
-            return obj.name !== user.name;
-        });
-        let following = []
-        for (user of users){
-            let flag = 0;
-            for(follows of req.user.following){
-                if(follows.friend==user._id){
-                    following.push(true);
-                    flag=1;
-                    break;
-                }
-            }
-            if(flag===0){
-                following.push(false);
-            }
-        }
-        
-        for(user of users){
-            profilepic.push( await Profilephotos.findOne({'id': user._id}))
-            
-        }
-        
-        res.render(__dirname + '/public/views/users/users.ejs',{users,user: req.user,profilepic,following});
-    }
-})
-
-app.post('/follow/:id', authenticateToken, async (req, res) => {
+//OOPs Implemented
+app.get('/users', authenticateToken, async (req, res) => {
     if (req.user != null) {
-        let user = req.user;
-        let followuser = await new User().showdb({'_id': req.params.id});
-        if (followuser != null) {
-            followuser.followers.push({'friend': user._id});
-            await followuser.save();
-            user.following.push({'friend': followuser._id});
-            await user.save();
-        }
-        else {
-            res.send("User does not exist.")
-        }
-    }
-    else {
-        res.redirect('/login')
-    }
-})
-
-app.get('/post', authenticateToken, async (req, res) => {
-    if (req.user != null) {
-        let user = req.user;
-        let postdb = await posts.find({})
-        let post = [];
-        let by = [];
-        let profilepic = [];
-        let flag = 0;
-        for (let i = 0; i < postdb.length; i++) {
-            for (let j = 0; j < user.following.length; j++) {
-                if (user.following[j].friend === postdb[i].id) {
-                    flag = 1;
-                    break;
-                }
-            }
-            if (flag === 1) {
-                profilepic.push(await Profilephotos.findOne({
-                    'id': (postdb[i].id)
-                }))
-                post.push(postdb[i]);
-                by.push(await new User().showdb({
-                    '_id': postdb[i].id
-                }))
-                flag = 0;
-            }
-
-        }
-        res.render(__dirname + '/public/views/posts/post.ejs', {
-            post,
-            by,
-            profilepic,
-            user
+        let obj = await new User().getFollowingList(req);
+        res.render(__dirname + '/public/views/users/users.ejs', {
+            users: obj.users,
+            user: obj.user,
+            profilepic: obj.profilepic,
+            following: obj.following
         });
-    } else {
-        res.render(__dirname + '/public/views/notLoggedInPage/notloggedin.ejs');
-    }
-})
-
-app.post('/post', authenticateToken, async (req, res) => {
-    req.body.id = req.user._id;
-    let newpost = new post(req.body, req);
-    res.redirect('/post');
-})
-
-app.post('/likepost/:id', authenticateToken, async (req, res) => {
-    if (req.user) {
-        let postid = req.params.id;
-        let post = await posts.findOne({
-            '_id': postid
-        });
-        if (post != null) {
-            post.likes.push({
-                'by': req.user._id
-            });
-            await post.save();
-            res.redirect('/post');
-        } else {
-            res.send("Illegal Post ID.");
-        }
-    } else {
-        res.redirect('/login')
-    }
-})
-
-app.post('/removelike/:id',authenticateToken, async(req,res)=>{
-    if(req.user){
-        let postid = req.params.id;
-        let post = await posts.findOne({'_id': postid});
-        if(post!=null){
-            let index =  post.likes.indexOf(req.user._id);
-            if(index>-1){
-                post.likes.splice(index,1);
-            }
-            await post.save();
-        }
-        else{
-            res.send('Invalid Post ID');
-        }
     }
     else{
         res.redirect('/');
     }
 })
 
-app.get('/comments/:id', async (req, res) => {
-    let post = await posts.findOne({
-        '_id': req.params.id
-    });
-    let by = []
-    let user = []
-    post.comments.forEach(ele => {
-        by.push(ele.by);
-    })
-    for(ele of by) {
-        user.push(await new User().showdb({'_id': ele}));
-
+//OOPs Implemented
+app.post('/follow/:id', authenticateToken, async (req, res) => {
+    if (req.user != null) {
+        await new User().followUser(req,res); 
+    } else {
+        res.redirect('/login')
     }
-    console.log('user', user)
-    res.render(__dirname + '/public/views/comments/comments.ejs', {
-        post,
-        user
-    });
 })
 
+
+//Implemented OOPs
+app.get('/post', authenticateToken, async (req, res) => {
+    if (req.user != null) {
+        let userdb= new User().showdb('user',{});
+        userdb = JSON.stringify(userdb);
+        let timeline = await new User().getTimeline(req.user);
+        res.render(__dirname + '/public/views/posts/post.ejs', {
+            post: timeline['post'],
+            by: timeline['by'],
+            profilepic: timeline['profilepic'],
+            user: req.user,
+            userdb
+        });
+    } else {
+        res.redirect('/');
+    }
+})
+
+
+//Implement OOPs
+app.post('/post', authenticateToken, async (req, res) => {
+    req.body.id = req.user._id;
+    let newpost = new Post()
+    await newpost.createPost(req.body, req);
+    res.redirect('/post');
+})
+
+//Implemented OOPs
+app.post('/likepost/:id', authenticateToken, async (req, res) => {
+    if (req.user != null) {
+        new Post().likePost(req, res);
+    } else {
+        res.redirect('/login')
+    }
+})
+
+app.post('/removelike/:id', authenticateToken, async (req, res) => {
+    if (req.user) {
+        let postid = req.params.id;
+        let post = await posts.findOne({
+            '_id': postid
+        });
+        if (post != null) {
+            let index = post.likes.indexOf(req.user._id);
+            if (index > -1) {
+                post.likes.splice(index, 1);
+            }
+            await post.save();
+        } else {
+            res.send('Invalid Post ID');
+        }
+    } else {
+        res.redirect('/');
+    }
+})
+
+//OOPs Implemented
+app.get('/comments/:id',authenticateToken, async (req, res) => {
+    if(req.user!=null){
+    let obj = await new Post().getComment(req);
+    let author = await new User().showdb('user',{'_id': obj.post.id})
+    res.render(__dirname + '/public/views/comments/comments.ejs', {post: obj.post,user: obj.user,requser: req.user,author});
+    }
+    else{
+        res.redirect('/');
+    }
+})
+
+//OOPs Implemented
 app.post('/postcomment/:id', authenticateToken, async (req, res) => {
     if (req.user != null) {
-        let post = await posts.findOne({
-            '_id': req.params.id
-        })
-        post.comments.push({
-            'comment': req.body.comment,
-            'by': req.user._id
-        });
-        await post.save()
-        res.redirect('/post');
+        await new Post().postComment(req);
+        res.redirect(`/comments/${req.params.id}`);
     } else {
         res.redirect(__dirname + '/public/views/login/login.ejs')
     }
 })
-
+1
 
 app.get('/keepalive', (req, res) => {
     res.send('Ping Recieved ' + Date.now())

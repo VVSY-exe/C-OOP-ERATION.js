@@ -1,22 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Comments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="views/comments/assets/css/Community-ChatComments.css">
+    <link rel="stylesheet" href="/views/comments/assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="/views/comments/assets/css/styles.css">
 </head>
-<body>
-    <%if(post.photo!=null){%>
-    <img src="data:image/png;base64,<%=post.photo%>">
-    <%}%>
+<body style="margin: -2px;background: rgb(241,221,221);">
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
+        <div class="container"><a class="navbar-brand" href="#">@<%=requser.username%></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse"
+                id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="/post">Timeline</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <hr>
     <%let i=0%>
-    <%post.comments.forEach(ele=>{%>
-        <div><%=user[i].name%>: <%=ele.comment%></div>
-        <%i++;%>
-    <%})%>
-    <form method="POST" action="/postcomment/<%=post._id%>">
-    <textarea name="comment" row="30" cols="50"></textarea>
-    <input type="Submit" value="Comment">
-    </form>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4" ></div>
+                <div class="col-md-4" style="text-align: left;width: 100%;min-height: auto;margin-right: 0px;min-width: 60%;background: #ffffff;">
+                    <div>
+                        <p><strong>@<%=author.username%></strong></p>
+                        <p><%=post.post%></p>
+                    </div>
+                    <hr>
+                    <%if(post.photo!=null){%>
+                    <div style="text-align: center;"><img src="data:image/png;base64,<%=post.photo%>" style="text-align: center;"></div>
+                    <%}%>
+                    </div>
+                <div class="col-md-4" style="max-width: 20%;"></div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <div class="card" style="text-align: left;margin: 20%;margin-top:5%;margin-bottom: 0%;">
+            <div class="card-header" style="width: 100%;max-width: 100%;min-width: 100%;height: 62px;text-align: center;">
+                <h3>Comments</h3>
+            </div>
+            <%post.comments.forEach(ele=>{%>
+            <div class="card-body" style="height:120px;">
+                <ul class="list-group">
+                    <li class="list-group-item" style="margin-bottom:6px;">
+                        <div class="media">
+                            <div class="media-body">
+                                <div class="media" style="overflow:visible;">
+                                    <div class="media-body" style="overflow:visible;">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <p><a href="#"><%=user[i].name%>:</a> <%=ele.comment%><br>
+<small class="text-muted">August 6, 2016 @ 10:35am </small></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                   
+                </ul>
+            </div>
+            <%i++%>
+            <%})%>
+        </div>
+    </div>
+    <form method="POST" action="/postcomment/<%=post._id%>">    
+    <div style="margin: 20%;margin-top:3%"><div class="card text-white bg-primary mb-1">
+  <div class="card-header">
+      <input type="submit" value="Comment" class="float-right btn btn-dark"> <i class="fa fa-comment"></i> Comment</a>
+  </div>
+  <div class="card-body">
+      <div class=" card-text form-group">
+          <textarea placeholder="Comment" rows="4"
+                    class="form-control form-control-lg" name="comment"></textarea>
+      </div>
+    
+  </div>
+</div>
+</div>
+</form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
