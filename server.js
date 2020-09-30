@@ -225,6 +225,16 @@ app.post('/postcomment/:id', authenticateToken, async (req, res) => {
 })
 1
 
+app.get('/profile/:id', authenticateToken,async(req,res)=>{
+    if(req.user!=null){
+        let user = await new User().showdb('user',{'_id': req.params.id});
+        let post = await new Post().showdb('post',{'id': req.params.id},true);
+        let profilepic = await new Profilephotos().showdb('profilephotos',{'id': req.params.id});
+        console.log(user);
+        res.render(__dirname+'/public/views/profile/profile.ejs',{user,post,profilepic,requser: req.user});
+    }    
+})
+
 app.get('/keepalive', (req, res) => {
     res.send('Ping Recieved ' + Date.now())
     console.log('Ping Recieved ' + Date.now());
