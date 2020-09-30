@@ -26,24 +26,25 @@
     </nav>
     <hr>
     <%let i=0%>
+    <center>
     <div>
         <div class="container">
             <div class="row">
-                <div class="col-md-4" ></div>
-                <div class="col-md-4" style="text-align: left;width: 100%;min-height: auto;margin-right: 0px;min-width: 60%;background: #ffffff;">
+                <div class="col-md-4" style="text-align: left;width: 40%;max-height: 40%;margin-left: 30%;min-width: 40%;background: #ffffff;">
                     <div>
                         <p><strong>@<%=author.username%></strong></p>
                         <p><%=post.post%></p>
                     </div>
                     <hr>
                     <%if(post.photo!=null){%>
-                    <div style="text-align: center;"><img src="data:image/png;base64,<%=post.photo%>" style="text-align: center;"></div>
+                    <div style="text-align: center;"><img src="data:image/png;base64,<%=post.photo%>" style="text-align: center;height:250px;width:250px"></div>
                     <%}%>
                     </div>
                 <div class="col-md-4" style="max-width: 20%;"></div>
             </div>
         </div>
     </div>
+</center>
     <div style="text-align: center;">
         <div class="card" style="text-align: left;margin: 20%;margin-top:5%;margin-bottom: 0%;">
             <div class="card-header" style="width: 100%;max-width: 100%;min-width: 100%;height: 62px;text-align: center;">
