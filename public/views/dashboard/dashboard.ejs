@@ -31,13 +31,13 @@
             width: 150px;
             height: 150px;object-fit: cover; border-radius: 50%;border:solid 3px rgb(255, 89, 0) ;"
             src="data:image/png;base64,<%=profilephoto%>" width="200" height="200" alt="profile picture" id="pfp" />
-        <div class="col"><h1 id="username"><%=user.name%></h1>
- <button class="btn btn-primary" type="button">Followers:
+        <div class="col"><h1 id="username" style="margin-left:20px;"><%=user.name%></h1>
+ <button class="btn btn-primary" type="button" style="margin-left:20px;">Followers:
                 
                 <%=user.followers.length%></button>
                 
                 <button class="btn btn-primary" type="button"
- >Following:
+                style="margin-left:30px;">Following:
                 <%=user.following.length%></button>
         </div>
     </div>
@@ -49,8 +49,7 @@
             <%post.forEach(ele=>{%>
             <div class="row">
                 <%if(i==0){%>
-                <div class="col-md-4" style="max-width: 20%;background: #03274b;text-align: center">
-                    <div></div>
+                <div class="col-md-4" style="max-width: 20%;background: #03274b;text-align: center; height:100%;padding:10px" >
                     <p style="padding: 4px;text-align: center;color:#ffffff;font-weight: bolder;">@<%=user.username%></p>
                     <hr style="border-top: 1px solid white;">
                     <p style="color:#ffffff">Followers: <%=user.followers.length%></p>
