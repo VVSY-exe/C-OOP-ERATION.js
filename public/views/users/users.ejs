@@ -10,20 +10,23 @@
     <link rel="stylesheet" href="views/users/styles.min.css">
 </head>
 
-<body style="color: rgb(218,199,199);background: rgb(234,226,226);">
-    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
-        <div class="container"><a class="navbar-brand" href="#">@<%=user.username%></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse"
-                id="navcol-1">
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/post">Timeline</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+<body style="color: rgb(255, 255, 255);background: rgb(255, 255, 255);">
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean"  style="background:  #03274b;">
+        <div class="container" style="text-decoration: none; color:#ffffff"> <a class="navbar-brand" href="#">@<%=user.username%></a><button data-toggle="collapse"
+                class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span>
+                <span
+                    class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto" >
+                    <li class="nav-item"><a class="nav-link" href="/" style="text-decoration: none; color:#ffffff">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/post" style="text-decoration: none; color:#ffffff">Timeline</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout" style="text-decoration: none; color:#ffffff">Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
+
     <%let i=0%>
     <%users.forEach(ele=>{%>
     <div class="row user-list" style="min-width: 100%;max-width: 100%;width: 100%;height: 100%;min-height: 100%;max-height: 100%;margin-left:15%;margin-top:2%;margin-bottom: 0%;">
@@ -32,9 +35,12 @@
             <p class="user-name"><a href="#"><%=ele.name%></a><span>@<%=ele.username%></span></p></div>
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 user-item">
-       <button class="btn btn-link social-outline" style="color:#3097d1;padding-right:8px;padding-left:8px;padding-top:4px;padding-bottom:3px;" type="button"><i class="icon-user-follow" style="color:#3097d1;vertical-align:center"><a href="/profile/<%=ele._id%>"> View Profile</i></a></button>
+       <button class="btn btn-link social-outline" 
+       style=" background-color:  rgb(255, 89, 0); color:#ffffff;padding-right:8px;padding-left:8px;padding-top:4px;padding-bottom:3px;"
+        type="button">
+            <a href="/profile/<%=ele._id%> "  style="color:#ffffff"> View Profile</a></button>
        <%if(following[i]===false){%> 
-       <button class="btn btn-link social-outline" id="follow<%=ele._id%>" style="color:#3097d1;padding-right:8px;padding-left:8px;padding-top:4px;padding-bottom:3px;" type="button"><i class="icon-user-follow" style="color:#3097d1;"></i> Follow</button>
+       <button  class="btn btn-link social-outline" id="follow<%=ele._id%>" style=" background-color:  rgb(255, 89, 0);color:#ffffff;padding-right:8px;padding-left:8px;padding-top:4px;padding-bottom:3px;" type="button"><i class="icon-user-follow" style="color:#ffffff;"></i> Follow</button>
        <script>
         document.getElementById('follow<%=ele._id%>').onclick = () => {
             document.getElementById('follow<%=ele._id%>').innerText = "Following";
@@ -44,7 +50,7 @@
         }
     </script>
     <%}else{%>
-        <button class="btn btn-link social-outline" id="follow<%=ele._id%>" style="color:#3097d1;padding-right:8px;padding-left:8px;padding-top:4px;padding-bottom:3px;" type="button"><i class="icon-user-follow" style="color:#3097d1;"></i> Following</button>
+        <button class="btn btn-link social-outline" id="follow<%=ele._id%>" style=" background-color:  rgb(255, 89, 0);color:#ffffff;padding-right:8px;padding-left:8px;padding-top:4px;padding-bottom:3px;" type="button"><i class="icon-user-follow" style="color:#ffffff;"></i> Following</button>
      <%}%>
      <%i++%>
     </div>

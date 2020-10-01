@@ -10,22 +10,28 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
-<body style="background: rgb(234,226,226);">
+<body style="background:rgba(255, 255, 255, 0.967);">
     
-    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
-        <div class="container"><a class="navbar-brand" href="#"><b>@<%=user.username%></b></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse"
-                id="navcol-1">
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/post">Timeline</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean"  style="background:  #03274b;">
+        <div class="container" style="text-decoration: none; color:#ffffff"> <a class="navbar-brand" href="#">@<%=user.username%></a><button data-toggle="collapse"
+                class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span>
+                <span
+                    class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto" >
+                    <li class="nav-item"><a class="nav-link" href="/" style="text-decoration: none; color:#ffffff">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/post" style="text-decoration: none; color:#ffffff">Timeline</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout" style="text-decoration: none; color:#ffffff">Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
+
+
+
     <br>
+
     <%let j=0,k=0%>
     <%let i=0%>    
     <%post.reverse();profilepic.reverse();by.reverse()%>
@@ -34,33 +40,34 @@
         <div class="container">        
             <div class="row">
                 <%if(k==0){%>
-                <div class="col-md-4" style="background: #fef2f2;padding: 11px;text-align: center;width: 100%;height: 100%;max-width: 20%;">
+                <div class="col-md-4" style="background: #03274b;padding: 11px;text-align: center;width: 100%;height: 100%;max-width: 20%;">
                     <div></div>
-                    <p style="padding: 4px;text-align: center;font-weight: bolder;">@<%=user.username%></p>
-                    <hr>
-                    <p>Followers: <%=user.followers.length%></p>
-                    <p>Following: <%=user.following.length%></p>
-                    <hr><button class="btn btn-primary" type="button" style="text-align: center;padding: 5px;">Follow Users</button></div>
+                    <p style="padding: 4px;text-align: center;font-weight: bolder;color:#ffffff";>@<%=user.username%></p>
+                    <hr style="border-top: 1px solid white">
+                    <p style="color:#ffffff">Followers: <%=user.followers.length%></p>
+                    <p style="color:#ffffff">Following: <%=user.following.length%></p>
+                    <hr style="border-top: 1px solid white">
+                    <button class="btn btn-primary" style="background-color: rgb(255, 89, 0)"type="button" style="text-align: center;padding: 5px;">Follow Users</button></div>
                     <%k++%>
                     <%}else{%>
                         <div class="col-md-4" style="padding: 11px;text-align: center;width: 100%;height: 100%;max-width: 20%;">
                             <div></div>
                             <p style="padding: 4px;text-align: center;"></p>
-                            <hr>
+                            <hr >
                             <p></p>
                             <p></p>
                         </div>    
                     <%}%>
-                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #ffffff;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 10%;">
-                    <div class="row" style="background: #d7c5c5;">
+                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 10%;">
+                    <div class="row" style="background:#03274b;">
                         <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
                         <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
-                            <p style="text-align: left;font-size: 17px;"><%=by[i].name%><%i++%></p>
+                            <p style="text-align: left;font-size: 17px ;color: rgb(255, 255, 255)"><%=by[i].name%><%i++%></p>
                             <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;16:00 23rd September</p>
                         </div>
                     </div>
                     <p style="text-align: left;"><%=ele.post%>&nbsp;<br></p>
-                    <hr>
+                    <hr style="border-top: 2px solid white;">
                     <%if(ele.photo!=null){%>
                     <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
                     <%}%>
@@ -81,17 +88,17 @@
             </div>
             <br><br> 
                 <%if(j==0){%>
-                <div class="col" style="background: #ffffff; margin-bottom: 5%;">
+                <div class="col" style="background:#03274b; margin-bottom: 5%;">
                     <div></div>
-                    <p><strong>Friends</strong></p>
-                    <hr>
-                    <p style="margin-bottom: -7px;margin-top: -7px;">@user1</p>
-                    <hr>
-                    <p style="margin-bottom: -7px;margin-top: -7px;">@user2</p>
-                    <hr>
-                    <p style="margin-bottom: -7px;margin-top: -7px;">@user3</p>
-                    <hr>
-                    <p style="margin-bottom: -7px;margin-top: -7px;">@user4</p>
+                    <p  style=" color:white;"><strong>Friends</strong></p>
+                    <hr style="border-top: 1px solid white;">
+                    <p style="margin-bottom: -7px;margin-top : -7px;color:#ffffff">@user1</p>
+                    <hr style="border-top: 1px solid white;">
+                    <p style="margin-bottom: -7px;margin-top: -7px;color:#ffffff">@user2</p>
+                    <hr style="border-top: 1px solid white;">
+                    <p style="margin-bottom: -7px;margin-top: -7px;color:#ffffff">@user3</p>
+                    <hr style="border-top: 1px solid white;">
+                    <p style="margin-bottom: -7px;margin-top: -7px;color:#ffffff">@user4</p>
                 </div>
                 <br><br>
                 <%j++;%>
