@@ -33,26 +33,32 @@
 
     <hr>
     <%let i=0%>
+    <center>
     <div>
         <div class="container">
             <div class="row">
+<<<<<<< HEAD
                 <div class="col-md-4" ></div>
                 
                 <div class="col-md-4" style="text-align: left;width: 100%;min-height: auto;
                 margin-right:0px;min-width: 60%;background: #a7a6a6;">
+=======
+                <div class="col-md-4" style="text-align: left;width: 40%;max-height: 40%;margin-left: 30%;min-width: 40%;background: #ffffff;">
+>>>>>>> 6b448201d9efd29fe6004005e89b4a71ddefd507
                     <div>
                         <p><strong>@<%=author.username%></strong></p>
                         <p><%=post.post%></p>
                     </div>
                     <hr style="border-top: 1px solid white">
                     <%if(post.photo!=null){%>
-                    <div style="text-align: center;"><img src="data:image/png;base64,<%=post.photo%>" style="text-align: center;"></div>
+                    <div style="text-align: center;"><img src="data:image/png;base64,<%=post.photo%>" style="text-align: center;height:250px;width:250px"></div>
                     <%}%>
                     </div>
                 <div class="col-md-4" style="max-width: 20%;"></div>
             </div>
         </div>
     </div>
+</center>
     <div style="text-align: center;">
         <div class="card" style="text-align: left;margin: 20%;margin-top:5%;margin-bottom: 0%;background:#03274b">
             <div class="card-header" style="width: 100%;max-width: 100%;min-width: 100%;height: 62px;text-align: center;background: rgb(255, 89, 0)">
