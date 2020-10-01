@@ -12,7 +12,6 @@ class User extends Database {
 
     constructor(Data) {
         super(); //calls the constructor of the super class, if we don't do this it will result in a reference error
-        console.log('Users Class accessed');
         let data = Data; //create a copy of the original data, so that it cannot be modified/manipulated.
         this.getData = () => { //declare a class method to privately access the data, to show Abstraction
             return data; /* *USE OF ABSTRACTION* */
@@ -21,7 +20,7 @@ class User extends Database {
     }
 
 
-    async createUser(req) {
+    async createUser(req,page=false) {
 
         let bool = await this.findExisting(this.getData().username); //calls the findExisting function of Database class to check if username already exists
         //*advantage of inheritance* 
@@ -32,7 +31,8 @@ class User extends Database {
             let cryptedPassword = CryptoJS.AES.encrypt(this.getData().password, secretKey)
             newUser.password = cryptedPassword;
             if (req.files!=null){
-            await new Profilephotos().assignProfilePhoto(req, newUser);  
+            await new Profilephotos().assignProfilePhoto(req, newUser);
+            if (page==false) { //to prevent Parallel Save Error in MongoDB
             await newUser.save((err, user) => {
                 if (err) {
                     console.log("An error occured while saving your data:\n" + err);
@@ -41,6 +41,10 @@ class User extends Database {
                     console.log("A new user has been registered. The Data is as follows:\n" + newUser);
                 }
             });
+        }
+        else {
+            newUser.isPage = true;
+        }
             if (flag === 1) {
                 return newUser;
             } else {
