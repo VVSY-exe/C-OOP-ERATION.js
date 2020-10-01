@@ -12,7 +12,8 @@ const app = express();
 const User = require('./objects/user.js');
 const Database = require('./objects/database.js');
 const Post = require('./objects/post.js');
-const Random = require('./objects/random.js')
+const Random = require('./objects/random.js');
+const Page = require('./objects/page.js');
 const authenticateToken = require('./middleware/authenticate.js');
 var cookieParser = require('cookie-parser');
 const user = require('./models/user.js');
@@ -39,13 +40,25 @@ app.set('view engine', 'ejs');
 //OOPs impelemented
 app.get('/', authenticateToken, async function (req, res) {
     if (req.user != null) {
-        let obj = await new User().getDashboard(req);
-        res.render((__dirname + '/public/views/dashboard/dashboard.ejs'), {
-            user: obj.user,
-            following: obj.following,
-            profilephoto: obj.profilephoto,
-            post: obj.post,
-        });
+        console.log("Page boolean:", req.user.isPage);
+        if (req.user.isPage == false) {
+            let obj = await new User().getDashboard(req);
+            res.render((__dirname + '/public/views/dashboard/dashboard.ejs'), {
+                user: obj.user,
+                following: obj.following,
+                profilephoto: obj.profilephoto,
+                post: obj.post,
+            });
+        } else {
+            let obj = await new Page().getDashboard(req);
+            res.render(__dirname + '/public/views/pages/page.ejs', {
+                username: req.user.username,
+                user: req.user,
+                pageimage: obj.pageimage,
+                following: obj.following,
+                profilephoto: obj.profilephoto
+            })
+        }
     } else {
         res.render(__dirname + '/public/views/login/login.ejs');
     }
@@ -55,6 +68,27 @@ app.get('/', authenticateToken, async function (req, res) {
 //OOPs not needed
 app.get('/signup', (req, res) => {
     res.status(200).render(__dirname + '/public/views/signup/signup.ejs');
+})
+
+app.get('/pagesignup', async (req, res) => {
+    res.status(200).render(__dirname + '/public/views/pagesignup/pagesignup.ejs');
+})
+
+app.post('/pagesignup', async (req, res) => {
+    const page = await new Page(req.body);
+    let status = await page.createPage(req);
+    if (!status) {
+        res.send('You failed to register! Please make sure you entered all the data.')
+    } else {
+        res.send(`Success!
+        <script>
+        setTimeout(function () {
+           // after 2 seconds
+           window.location = "/login";
+        }, 1500)
+      </script>`);
+    }
+
 })
 
 //POST request handler for Signup, adds an User to the DB by creating an Object
@@ -130,8 +164,7 @@ app.get('/users', authenticateToken, async (req, res) => {
             profilepic: obj.profilepic,
             following: obj.following
         });
-    }
-    else{
+    } else {
         res.redirect('/');
     }
 })
@@ -139,7 +172,7 @@ app.get('/users', authenticateToken, async (req, res) => {
 //OOPs Implemented
 app.post('/follow/:id', authenticateToken, async (req, res) => {
     if (req.user != null) {
-        await new User().followUser(req,res); 
+        await new User().followUser(req, res);
     } else {
         res.redirect('/login')
     }
@@ -149,7 +182,7 @@ app.post('/follow/:id', authenticateToken, async (req, res) => {
 //Implemented OOPs
 app.get('/post', authenticateToken, async (req, res) => {
     if (req.user != null) {
-        let userdb= new User().showdb('user',{});
+        let userdb = new User().showdb('user', {});
         userdb = JSON.stringify(userdb);
         let timeline = await new User().getTimeline(req.user);
         res.render(__dirname + '/public/views/posts/post.ejs', {
@@ -203,13 +236,19 @@ app.post('/removelike/:id', authenticateToken, async (req, res) => {
 })
 
 //OOPs Implemented
-app.get('/comments/:id',authenticateToken, async (req, res) => {
-    if(req.user!=null){
-    let obj = await new Post().getComment(req);
-    let author = await new User().showdb('user',{'_id': obj.post.id})
-    res.render(__dirname + '/public/views/comments/comments.ejs', {post: obj.post,user: obj.user,requser: req.user,author});
-    }
-    else{
+app.get('/comments/:id', authenticateToken, async (req, res) => {
+    if (req.user != null) {
+        let obj = await new Post().getComment(req);
+        let author = await new User().showdb('user', {
+            '_id': obj.post.id
+        })
+        res.render(__dirname + '/public/views/comments/comments.ejs', {
+            post: obj.post,
+            user: obj.user,
+            requser: req.user,
+            author
+        });
+    } else {
         res.redirect('/');
     }
 })
@@ -225,14 +264,39 @@ app.post('/postcomment/:id', authenticateToken, async (req, res) => {
 })
 1
 
-app.get('/profile/:id', authenticateToken,async(req,res)=>{
-    if(req.user!=null){
-        let user = await new User().showdb('user',{'_id': req.params.id});
-        let post = await new Post().showdb('post',{'id': req.params.id},true);
-        let profilepic = await new Profilephotos().showdb('profilephotos',{'id': req.params.id});
-        console.log(user);
-        res.render(__dirname+'/public/views/profile/profile.ejs',{user,post,profilepic,requser: req.user});
-    }    
+app.get('/profile/:id', authenticateToken, async (req, res) => {
+    if (req.user != null) {
+        let user = await new User().showdb('user', {
+            '_id': req.params.id
+        });
+        let post = await new Post().showdb('post', {
+            'id': req.params.id
+        }, true);
+        let profilepic = await new Profilephotos().showdb('profilephotos', {
+            'id': req.params.id
+        });
+        if (!user.isPage) {
+            res.render(__dirname + '/public/views/profile/profile.ejs', {
+                user,
+                post,
+                profilepic,
+                requser: req.user
+            });
+        } else {
+            username = req.user.username;
+            req.user = user;
+            let obj = await new Page().getDashboard(req);
+            res.render(__dirname + '/public/views/pages/page.ejs', {
+                user: req.user,
+                username,
+                pageimage: obj.pageimage,
+                following: obj.following,
+                profilephoto: obj.profilephoto
+            })
+        }
+    } else {
+        res.redirect('/')
+    }
 })
 
 app.get('/keepalive', (req, res) => {
