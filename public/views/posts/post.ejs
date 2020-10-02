@@ -63,7 +63,7 @@
                         <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
                         <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
                             <p style="text-align: left;font-size: 17px ;color: rgb(255, 255, 255)"><%=by[i].name%><%i++%></p>
-                            <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;16:00 23rd September</p>
+                            <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;<%=ele.timestamp.toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})%></p>
                         </div>
                     </div>
                     <p style="text-align: left;"><%=ele.post%>&nbsp;<br></p>

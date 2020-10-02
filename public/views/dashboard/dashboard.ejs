@@ -74,7 +74,7 @@
                 <p style="text-align: left;font-size: 17px;font-weight: bolder;color:#ffffff">@<%=user.username%></p>
                   <p
                     style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">
-                    &nbsp;16:00 23rd September</p> 
+                    &nbsp;<%=ele.timestamp.toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})%></p> 
             </div>
         </div>
         <p style="text-align: left;"><br><%=ele.post%>&nbsp;<br></p><%i++%>

@@ -27,7 +27,7 @@
         
         <div><img class="rounded-circle" style="margin-top:-70px;" src="data:image/png;base64,<%=profilepic.profilephoto%>" height="150px">
             <h3><%=user.name%></h3>
-            <p style="padding:20px;padding-bottom:0;padding-top:5px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque dapibus felis et libero scelerisque.</p>
+            <p style="padding:20px;padding-bottom:0;padding-top:5px;"><i>"<%=user.bio%></i>"</p>
         </div>
         <div class="row" style="padding:0;padding-bottom:10px;padding-top:20px;">
             <div class="col-md-6">
@@ -48,7 +48,7 @@
             <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilepic.profilephoto%>" style="width: 42%;height: 61%;"></div>
             <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
                 <p style="text-align: left;font-size: 17px;font-weight: bolder;">@<%=user.username%></p>
-                <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;16:00 23rd September</p>
+                <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;<%=ele.timestamp.toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})%></p>
             </div>
         </div>
         <p style="text-align: left;"><br><%=ele.post%>&nbsp;<br></p>
