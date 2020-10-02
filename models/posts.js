@@ -22,7 +22,8 @@ let posts = new Schema({
     }],
     comments: [{
         comment: String,
-        by: String
+        by: String,
+        timestamp : { type: Date, default: Date.now} 
     }]
 }, {
     timestamps: {

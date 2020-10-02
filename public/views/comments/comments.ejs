@@ -71,12 +71,12 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <p><a href="#"><%=user[i].name%>:</a> <%=ele.comment%><br>
-<small class="text-muted">August 6, 2016 @ 10:35am </small></p>
+<small class="text-muted"><%=new Date(ele.timestamp).toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})%></small></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>  
                         </div>
                     </li>
                    
