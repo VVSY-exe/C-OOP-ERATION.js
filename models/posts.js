@@ -6,7 +6,10 @@ let jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 //connect the cluster to the schema
-mongoose.connect(process.env.db, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.db, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 
 /*Create a new model/object by the name of User
  *whenever a new user signs up this creates a new user object in the database*/
@@ -14,16 +17,18 @@ let posts = new Schema({
     photo: String,
     id: String,
     post: String,
-    likes: [
-        {
-            by: String
-        }
-    ],
+    likes: [{
+        by: String
+    }],
     comments: [{
         comment: String,
         by: String
     }]
-})
+}, {
+    timestamps: {
+        createdAt: 'timestamp'
+    }
+});
 
 
 
