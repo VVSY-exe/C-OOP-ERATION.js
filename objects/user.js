@@ -118,10 +118,12 @@ class User extends Database {
                 }
             }
             if (flag === 1) {
-                profilepic.push(await new Profilephotos().showdb('profilephotos',{'id': (postdb[i].id)}))
-                post.push(postdb[i]);
-                by.push(await new User().showdb('User', {'_id': postdb[i].id}))
-                flag = 0;
+                if (postdb[i].tag=="General") {
+                    profilepic.push(await new Profilephotos().showdb('profilephotos',{'id': (postdb[i].id)}))
+                    post.push(postdb[i]);
+                    by.push(await new User().showdb('User', {'_id': postdb[i].id}))
+                    flag = 0;
+                }
             }
 
         }
@@ -199,6 +201,24 @@ class User extends Database {
         } else {
             res.send("User does not exist.")
         }
+    }
+
+    async getComplaints() {
+        let postdb = await new Post().showdb('post');
+        let post = [],
+            by = [],
+            profilepic = [];
+
+        for (let i = 0; i < postdb.length; i++) {
+                if (postdb[i].tag=="Complaint") {
+                    profilepic.push(await new Profilephotos().showdb('profilephotos',{'id': (postdb[i].id)}))
+                    post.push(postdb[i]);
+                    by.push(await new User().showdb('User', {'_id': postdb[i].id}))
+                }
+            
+
+        }
+        return {post,by,profilepic};
     }
 
 }
