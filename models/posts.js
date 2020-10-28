@@ -17,6 +17,7 @@ let posts = new Schema({
     photo: String,
     id: String,
     post: String,
+    tag: String,
     likes: [{
         by: String
     }],
