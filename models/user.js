@@ -17,6 +17,7 @@ let User = new Schema({
     about2: {type: String, default: null},
     about3: {type: String, default: null},
     isPage: {type: Boolean, default: false},
+    isAdmin: {type: Boolean, default: false},
     password: {type: String, required: true, index:true, sparse:true},
     username: {type: String, required: true, index:true, sparse:true},
     following: [{
