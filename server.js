@@ -35,6 +35,9 @@ app.use(express.static('public'));
 //set view engine to ejs, which allows to embed JS into HTML
 app.set('view engine', 'ejs');
 
+var server = app.listen('3000', () => console.log("Listening to Port 3000"));
+
+var io = require('socket.io')(server);
 
 //GET request handler for homepage
 //OOPs impelemented
@@ -200,6 +203,7 @@ app.get('/post', authenticateToken, async (req, res) => {
 
 //Implement OOPs
 app.post('/post', authenticateToken, async (req, res) => {
+    console.log(req.body);
     req.body.id = req.user._id;
     let newpost = new Post()
     await newpost.createPost(req.body, req);
@@ -299,12 +303,63 @@ app.get('/profile/:id', authenticateToken, async (req, res) => {
     }
 })
 
+app.get('/complaints', authenticateToken, async (req, res) => {
+    if (req.user!=null) {
+        if (req.user.isAdmin===true) {
+            data = await new User().getComplaints();
+            res.render(__dirname + '/public/views/complaints/complaints.ejs', {
+                post: data['post'],
+                by: data['by'],
+                profilepic: data['profilepic'],
+                user: req.user
+            });
+        }
+        else {
+            res.send("Access Denied.");
+        }
+    }
+    else {
+        res.redirect('/');
+    }
+})
+
+app.post('/resolve/:id', authenticateToken, async (req, res) => {
+    if (req.user!=null) {
+        if(req.user.isAdmin===true) {
+            let cid = req.params.id;
+            complaint = await new Post().showdb('Post', {'_id': cid});
+            await complaint.remove();
+        }
+    }
+    else {
+        res.redirect('/');
+    }
+})
+
+app.get('/chat/:id', authenticateToken, async (req, res) => {
+    if (req.user!=null) {
+        io.once('connection', async socket => {
+            console.log(`${req.user.name} connected to Chatroom ID ${req.params.id}. Socket ID is: ${socket.id}`);
+            io.emit('user connect', `${req.user.name} connected to the Chatroom.`);
+            socket.on('disconnect', () => {
+                console.log(`${req.user.name} disconnected from Chatroom ID ${req.params.id}.`)
+                io.emit('user disconnect', `${req.user.name} disconnected from the Chatroom.`);
+            });
+            socket.on('chat message', msg => {
+                console.log(`${req.user.name} sent a message to Chatroom ID ${req.params.id}: ${msg}`);
+                io.emit('chat message', {msg, user: req.user.name, timestamp: new Date().toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})})
+            });
+        })
+    res.render(__dirname + '/public/views/chat/chat.ejs');
+    }
+})
+
 app.get('/keepalive', (req, res) => {
     res.send('Ping Recieved ' + Date.now())
     console.log('Ping Recieved ' + Date.now());
 })
 
-app.listen('3000', () => console.log("Listening to Port 3000"));
+
 
 setInterval(function () {
     http.get(process.env.hosturl + '/keepalive');
