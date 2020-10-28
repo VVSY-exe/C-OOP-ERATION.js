@@ -18,6 +18,7 @@ class post extends Database {
             let postdb = new posts()        //create a new entry in database
             postdb.id = data.id;            //stores the id of user who posted the post in that entry
             postdb.post = data.post;        //stores the post that the user posted in that entry
+            postdb.tag = data.tag;          //stores the tag of the post the user has created
             if (req.files != null) {        //check if the user has uploaded an image
                 postdb.photo = req.files.postphoto.data.toString("base64")
             }
