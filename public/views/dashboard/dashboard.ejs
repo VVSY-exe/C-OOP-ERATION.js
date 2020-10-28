@@ -17,6 +17,9 @@
                     class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto" >
+                    <%if (user.isAdmin===true) {%>
+                    <li class="nav-item"><a class="nav-link" href="/complaints" style="text-decoration: none; color:#ffffff">Complaints</a></li>
+                    <%}%>
                     <li class="nav-item"><a class="nav-link" href="/" style="text-decoration: none; color:#ffffff">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/post" style="text-decoration: none; color:#ffffff">Timeline</a></li>
                     <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Users</a></li>
