@@ -203,24 +203,35 @@ class User extends Database {
         }
     }
 
-    async getComplaints() {
-        let postdb = await new Post().showdb('post');
+    async getComplaints(user={},help=false) {
         let post = [],
             by = [],
             profilepic = [];
-
+            let postdb;
+        if(user==={}){
+             postdb = await new Post().showdb('post');
+        }
+        else {
+             postdb= await new Post().showdb('post',{'id':user._id},true);
+        }
         for (let i = 0; i < postdb.length; i++) {
-                if (postdb[i].tag=="Complaint") {
+            let tag;
+                if (help==false) {
+                    tag="Complaint";
+                }
+                else {
+                    tag="Help";
+                }
+                if (postdb[i].tag==tag) {
                     profilepic.push(await new Profilephotos().showdb('profilephotos',{'id': (postdb[i].id)}))
                     post.push(postdb[i]);
                     by.push(await new User().showdb('User', {'_id': postdb[i].id}))
                 }
-            
-
         }
         return {post,by,profilepic};
     }
-
 }
+
+
 
 module.exports = User;
