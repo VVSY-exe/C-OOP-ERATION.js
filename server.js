@@ -14,6 +14,7 @@ const Database = require('./objects/database.js');
 const Post = require('./objects/post.js');
 const Random = require('./objects/random.js');
 const Page = require('./objects/page.js');
+const Chat = require('./objects/chat.js');
 const authenticateToken = require('./middleware/authenticate.js');
 var cookieParser = require('cookie-parser');
 const user = require('./models/user.js');
@@ -203,10 +204,12 @@ app.get('/post', authenticateToken, async (req, res) => {
 
 //Implement OOPs
 app.post('/post', authenticateToken, async (req, res) => {
-    console.log(req.body);
     req.body.id = req.user._id;
     let newpost = new Post()
-    await newpost.createPost(req.body, req);
+    let post = await newpost.createPost(req.body, req);
+    if (req.body.tag==="Complaint") {
+        let chat = await new Chat().createChat(post._id);
+    }
     res.redirect('/post');
 })
 
@@ -305,7 +308,7 @@ app.get('/profile/:id', authenticateToken, async (req, res) => {
 
 app.get('/complaints', authenticateToken, async (req, res) => {
     if (req.user!=null) {
-        if (req.user.isAdmin===true) {
+        if (req.user.isAdmin===true||req.user.isSuperAdmin===true) {
             data = await new User().getComplaints();
             res.render(__dirname + '/public/views/complaints/complaints.ejs', {
                 post: data['post'],
@@ -325,11 +328,26 @@ app.get('/complaints', authenticateToken, async (req, res) => {
 
 app.post('/resolve/:id', authenticateToken, async (req, res) => {
     if (req.user!=null) {
-        if(req.user.isAdmin===true) {
+        if(req.user.isAdmin===true || req.user.isSuperAdmin === true) {
             let cid = req.params.id;
             complaint = await new Post().showdb('Post', {'_id': cid});
             await complaint.remove();
+            let chatroom = await new Chat().getMessages(cid);
+            await chatroom.remove();
+
         }
+    }
+    else {
+        res.redirect('/');
+    }
+})
+
+app.post('/upgrade/:id', authenticateToken, async(req, res) => {
+    if (req.user!=null && req.user.isAdmin===true) {
+        let cid = req.params.id;
+        complaint = await new Post().showdb('Post', {'_id': cid});
+        complaint.tag = "Help";
+        await complaint.save();
     }
     else {
         res.redirect('/');
@@ -338,19 +356,69 @@ app.post('/resolve/:id', authenticateToken, async (req, res) => {
 
 app.get('/chat/:id', authenticateToken, async (req, res) => {
     if (req.user!=null) {
+        
+        let roomid = req.params.id;
+        let chat = await new Chat().getMessages(roomid);
+        
+        if (chat!=null) {
         io.once('connection', async socket => {
+            socket.join(roomid)
             console.log(`${req.user.name} connected to Chatroom ID ${req.params.id}. Socket ID is: ${socket.id}`);
-            io.emit('user connect', `${req.user.name} connected to the Chatroom.`);
+            io.to(roomid).emit('user connect', `${req.user.name} connected to the Chatroom.`);
             socket.on('disconnect', () => {
                 console.log(`${req.user.name} disconnected from Chatroom ID ${req.params.id}.`)
-                io.emit('user disconnect', `${req.user.name} disconnected from the Chatroom.`);
+                io.to(roomid).emit('user disconnect', `${req.user.name} disconnected from the Chatroom.`);
             });
-            socket.on('chat message', msg => {
+            socket.on('chat message', async msg => {
+                let timestamp = new Date().toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})
                 console.log(`${req.user.name} sent a message to Chatroom ID ${req.params.id}: ${msg}`);
-                io.emit('chat message', {msg, user: req.user.name, timestamp: new Date().toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})})
+                io.to(roomid).emit('chat message', {msg, user: req.user.name, timestamp});
+                chat.messages.push({'message': msg, 'timestamp': timestamp, 'by': req.user.name});
+                await chat.save();
+
             });
-        })
-    res.render(__dirname + '/public/views/chat/chat.ejs');
+        });
+    res.render(__dirname + '/public/views/chat/index.ejs',{user:req.user,chat});
+        }
+        else{
+            res.send("This chat does not exist.")
+        }
+    }
+})
+
+app.get('/usercomplaints',authenticateToken, async (req,res)=>{
+    if (req.user!=null) {
+            let data = await new User().getComplaints(req.user);
+
+            res.render(__dirname + '/public/views/complaints/usercomplaints.ejs', {
+                post: data['post'],
+                by: data['by'],
+                profilepic: data['profilepic'],
+                user: req.user
+            });
+    }
+    else {
+        res.redirect('/');
+    }
+})
+
+app.get('/help', authenticateToken, async (req, res) => {
+    if (req.user!=null) {
+        if (req.user.isSuperAdmin===true) {
+            data = await new User().getComplaints({},true);
+            res.render(__dirname + '/public/views/complaints/complaints.ejs', {
+                post: data['post'],
+                by: data['by'],
+                profilepic: data['profilepic'],
+                user: req.user
+            });
+        }
+        else {
+            res.send("Access Denied.");
+        }
+    }
+    else {
+        res.redirect('/');
     }
 })
 
