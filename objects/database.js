@@ -1,6 +1,7 @@
 const user = require('../models/user.js');
 const Post = require('../models/posts.js');
 const Profilephotos = require('../models/profilephotos.js');
+const Chat = require('../models/chat.js')
 const CryptoJS = require('crypto-js');
 require('dotenv').config()
 class Database {
@@ -21,6 +22,9 @@ class Database {
         
         else if(classname.toLowerCase()==="profilephotos"){
             classname = Profilephotos;
+        }
+        else if(classname.toLowerCase()==="chat") {
+            classname = Chat;
         }
         else {
                 

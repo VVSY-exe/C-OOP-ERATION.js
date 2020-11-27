@@ -1,6 +1,7 @@
 const Database = require("./database.js");
 const posts = require('../models/posts.js');
 const User = require('./user.js');
+const postdb = require("../models/posts.js");
 //multiple inheritance
 //User inherits Database, and post inherits user so post inherits database
 class post extends Database {
@@ -23,6 +24,7 @@ class post extends Database {
                 postdb.photo = req.files.postphoto.data.toString("base64")
             }
             await postdb.save();
+            return postdb;
         } 
         
         else if (req.files != null) {
@@ -30,8 +32,8 @@ class post extends Database {
             postdb.id = data.id;
             postdb.photo = req.files.postphoto.data.toString("base64")
             await postdb.save();
+            return postdb;
         }
-
     }
 
     //Method 2
