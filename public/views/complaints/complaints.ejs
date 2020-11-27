@@ -59,7 +59,7 @@
                         </div>    
                     <%}%>
                     
-                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 10%;" id="<%=ele._id%>">
+                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 10%;">
                     <div class="row" style="background:#03274b;">
                         <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
                         <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
@@ -72,11 +72,23 @@
                     <%if(ele.photo!=null){%>
                     <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
                     <%}%>
-                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left; background: #03274b; padding: 5px; margin:10px;" id="c<%=ele._id%>"><a href="/comments/<%=ele._id%>" style=" color: white; text-decoration: none;">Chat & Discuss</a></div>
                     <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:right; background: #03274b; padding: 5px; color: white;margin:10px;" id="<%=ele._id%>">Mark as Resolved</div>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left; background: #03274b; padding: 5px; margin:10px;" ><a href="/chat/<%=ele._id%>" style=" color: white; text-decoration: none;">Chat & Discuss</a></div>
+                    <%if (user.isSuperAdmin===false) {%>
+                    <div style="margin-left:1%; margin-top:1%; text-align: left; display: inline; float:center; background: #03274b; padding: 5px; margin:10px;color: white;" id="u<%=ele._id%>">Transfer To Administration</div>
+                    <%}%>
                     <script>
                         document.getElementById('<%=ele._id%>').onclick = function()  {     
                             $.post('/resolve/<%=ele._id%>', function(data, status){   
+                            })
+                            setTimeout(function () {
+                                // after 2 seconds
+                                window.location.reload();
+                            }, 1500)
+                            
+                        }
+                        document.getElementById('u<%=ele._id%>').onclick = function()  {     
+                            $.post('/upgrade/<%=ele._id%>', function(data, status){   
                             })
                             setTimeout(function () {
                                 // after 2 seconds
@@ -88,9 +100,7 @@
             </div>
             <br><br> 
                 
-                <br><br>
-                
-                
+                <br><br>         
             </div>
         </div>
     
