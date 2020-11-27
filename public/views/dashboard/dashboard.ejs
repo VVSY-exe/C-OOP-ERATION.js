@@ -20,6 +20,12 @@
                     <%if (user.isAdmin===true) {%>
                     <li class="nav-item"><a class="nav-link" href="/complaints" style="text-decoration: none; color:#ffffff">Complaints</a></li>
                     <%}%>
+                    <%if (user.isSuperAdmin===true) {%>
+                        <li class="nav-item"><a class="nav-link" href="/help" style="text-decoration: none; color:#ffffff">Help Requests</a></li>
+                        <%}%>
+                    <%if((user.isAdmin===false)&&(user.isSuperAdmin===false)){%>
+                    <li class="nav-item"><a class="nav-link" href="/usercomplaints" style="text-decoration: none; color:#ffffff">Your Complaints</a></li>
+                    <%}%>
                     <li class="nav-item"><a class="nav-link" href="/" style="text-decoration: none; color:#ffffff">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/post" style="text-decoration: none; color:#ffffff">Timeline</a></li>
                     <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Users</a></li>
