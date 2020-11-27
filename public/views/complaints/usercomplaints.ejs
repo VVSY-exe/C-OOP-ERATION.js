@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Timeline</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/views/posts/styles.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body style="background:rgba(255, 255, 255, 0.967);">
+    
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean"  style="background:  #03274b;">
+        <div class="container" style="text-decoration: none; color:#ffffff"> <a class="navbar-brand" href="#">@<%=user.username%></a><button data-toggle="collapse"
+                class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span>
+                <span
+                    class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto" >
+                    <li class="nav-item"><a class="nav-link" href="/" style="text-decoration: none; color:#ffffff">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/post" style="text-decoration: none; color:#ffffff">Timeline</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout" style="text-decoration: none; color:#ffffff">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <br>
+
+    <%let j=0,k=0%>
+    <%let i=0%>    
+    <%post.reverse();profilepic.reverse();by.reverse()%>
+    <%post.forEach(ele=>{%>
+    <div>        
+        <div class="container">        
+            <div class="row">
+                <%if(k==0){%>
+                <div class="col-md-4" style="background: #03274b;padding: 11px;text-align: center;width: 100%;height: 100%;max-width: 20%;">
+                    <div></div>
+                    <p style="padding: 4px;text-align: center;font-weight: bolder;color:#ffffff";>@<%=user.username%></p>
+                    <hr style="border-top: 1px solid white">
+                    <p style="color:#ffffff">Followers: <%=user.followers.length%></p>
+                    <p style="color:#ffffff">Following: <%=user.following.length%></p>
+                    <hr style="border-top: 1px solid white">
+                    <button class="btn btn-primary" style="background-color: rgb(255, 89, 0)"type="button" style="text-align: center;padding: 5px;">Follow Users</button></div>
+                    <%k++%>
+                    <%}else{%>
+                        <div class="col-md-4" style="padding: 11px;text-align: center;width: 100%;height: 100%;max-width: 20%;">
+                            <div></div>
+                            <p style="padding: 4px;text-align: center;"></p>
+                            <hr >
+                            <p></p>
+                            <p></p>
+                        </div>    
+                    <%}%>
+                    
+                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 10%;" id="<%=ele._id%>">
+                    <div class="row" style="background:#03274b;">
+                        <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
+                        <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
+                            <p style="text-align: left;font-size: 17px ;color: rgb(255, 255, 255)"><%=by[i].name%><%i++%></p>
+                            <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;<%=ele.timestamp.toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})%></p>
+                        </div>
+                    </div>
+                    <p style="text-align: left;"><%=ele.post%>&nbsp;<br></p>
+                    <hr style="border-top: 2px solid white;">
+                    <%if(ele.photo!=null){%>
+                    <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
+                    <%}%>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left; background: #03274b; padding: 5px; margin:10px;" id="c<%=ele._id%>"><a href="/chat/<%=ele._id%>" style=" color: white; text-decoration: none;">Chat & Discuss</a></div>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:right; background: #03274b; padding: 5px; color: white;margin:10px;" id="<%=ele._id%>">Mark as Resolved</div>
+                    <script>
+                        document.getElementById('<%=ele._id%>').onclick = function()  {     
+                            $.post('/resolve/<%=ele._id%>', function(data, status){   
+                            })
+                            setTimeout(function () {
+                                // after 2 seconds
+                                window.location.reload();
+                            }, 1500)
+                            
+                        }
+                    </script>
+            </div>
+            <br><br> 
+                
+                <br><br>
+                
+                
+            </div>
+        </div>
+    
+    </div>
+    <%})%>
+    <center>
+    </center>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
