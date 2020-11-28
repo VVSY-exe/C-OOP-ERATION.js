@@ -40,6 +40,8 @@ var server = app.listen('3000', () => console.log("Listening to Port 3000"));
 
 var io = require('socket.io')(server);
 
+var validator = require('validator');
+
 //GET request handler for homepage
 //OOPs impelemented
 app.get('/', authenticateToken, async function (req, res) {
@@ -70,8 +72,16 @@ app.get('/', authenticateToken, async function (req, res) {
 
 //GET request handler for Signup Page
 //OOPs not needed
-app.get('/signup', (req, res) => {
-    res.status(200).render(__dirname + '/public/views/signup/signup.ejs');
+app.get('/signup/:id', async (req, res) => {
+    let id= req.params.id;
+    let link= await new User().showdb('register',{'id':id});
+    console.log(link)
+    if(link!=null){
+    res.status(200).render(__dirname + '/public/views/signup/signup.ejs',{'id': id});
+    }
+    else{
+        res.send('Email not verified!');
+    }
 })
 
 app.get('/pagesignup', async (req, res) => {
@@ -95,14 +105,48 @@ app.post('/pagesignup', async (req, res) => {
 
 })
 
+app.get('/newsignup',authenticateToken,async(req,res)=>{
+    if (req.user!=null) {
+        return res.redirect('/');
+    }
+    else {
+        res.render(__dirname+'/public/views/signup/newsignup.ejs');
+    }
+});
+
+app.post('/newsignup', authenticateToken, async(req, res) => {
+    if (req.user!=null) {
+        return res.redirect('/');
+    }
+    else{
+        let email = req.body.email;
+        if (!validator.isEmail(email)) {
+            res.send("Invalid Email Address.");
+        }
+        else {
+        new User().sendRegisterMail(email,res);        
+       }
+    }
+})
+
 //POST request handler for Signup, adds an User to the DB by creating an Object
 //object oriented
-app.post('/signup', async (req, res) => {
+app.post('/signup/:id', async (req, res) => {
+    let id= req.params.id;
+    let link= await new User().showdb('register',{'id':id});
+    if(link!=null){
+    req.body.email = link.email;
+    console.log(link);
+    console.log(req.body);
     const user = await new User(req.body);
     let status = await user.createUser(req);
+    
+    console.log(status);
     if (!status) {
         res.send('You failed to register! Please make sure you entered all the data.')
-    } else {
+    } 
+    else {
+        await link.remove();
         res.send(`Success!
         <script>
         setTimeout(function () {
@@ -111,6 +155,10 @@ app.post('/signup', async (req, res) => {
         }, 1500)
       </script>`);
     }
+}
+else{
+    res.send("Your email is not verified!");
+}
 })
 
 app.get('/login', async (req, res) => {
@@ -328,14 +376,11 @@ app.get('/complaints', authenticateToken, async (req, res) => {
 
 app.post('/resolve/:id', authenticateToken, async (req, res) => {
     if (req.user!=null) {
-        if(req.user.isAdmin===true || req.user.isSuperAdmin === true) {
             let cid = req.params.id;
             complaint = await new Post().showdb('Post', {'_id': cid});
             await complaint.remove();
             let chatroom = await new Chat().getMessages(cid);
             await chatroom.remove();
-
-        }
     }
     else {
         res.redirect('/');
