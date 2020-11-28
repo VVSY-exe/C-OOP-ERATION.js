@@ -13,6 +13,7 @@ mongoose.connect(process.env.db, { useNewUrlParser: true, useUnifiedTopology: tr
 let User = new Schema({
     name: {type: String, required: true},
     bio: {type: String, required: false, default: "Lorem Ipsum"},
+    email: {type: String, required: true},
     about1: {type: String, default: null},
     about2: {type: String, default: null},
     about3: {type: String, default: null},
