@@ -35,7 +35,10 @@
     <%let j=0,k=0%>
     <%let i=0%>    
     <%post.reverse();profilepic.reverse();by.reverse()%>
-    <%post.forEach(ele=>{%>
+    <%if(post.length<1){%>
+        <center><p><strong>No complaints/help requests yet.</strong></p></center>
+    <%}%>
+        <%post.forEach(ele=>{%>
     <div>        
         <div class="container">        
             <div class="row">
@@ -72,10 +75,10 @@
                     <%if(ele.photo!=null){%>
                     <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
                     <%}%>
-                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:right; background: #03274b; padding: 5px; color: white;margin:10px;" id="<%=ele._id%>">Mark as Resolved</div>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:right; cursor: pointer; background: #03274b; padding: 5px; color: white;margin:10px;" id="<%=ele._id%>">Mark as Resolved</div>
                     <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left; background: #03274b; padding: 5px; margin:10px;" ><a href="/chat/<%=ele._id%>" style=" color: white; text-decoration: none;">Chat & Discuss</a></div>
                     <%if (user.isSuperAdmin===false) {%>
-                    <div style="margin-left:1%; margin-top:1%; text-align: left; display: inline; float:center; background: #03274b; padding: 5px; margin:10px;color: white;" id="u<%=ele._id%>">Transfer To Administration</div>
+                    <div style="margin-left:1%; margin-top:1%; text-align: left; display: inline; float:center; cursor: pointer; background: #03274b; padding: 5px; margin:10px;color: white;" id="u<%=ele._id%>">Transfer To Administration</div>
                     <%}%>
                     <script>
                         document.getElementById('<%=ele._id%>').onclick = function()  {     

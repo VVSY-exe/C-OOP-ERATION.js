@@ -12,22 +12,31 @@
 
 <body style="background:rgba(255, 255, 255, 0.967);">
     
-    <nav class="navbar navbar-light navbar-expand-md navigation-clean"  style="background:  #03274b;">
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean"  style="background: #03274b;">
         <div class="container" style="text-decoration: none; color:#ffffff"> <a class="navbar-brand" href="#">@<%=user.username%></a><button data-toggle="collapse"
                 class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span>
                 <span
                     class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto" >
+                    <%if (user.isAdmin===true) {%>
+                    <li class="nav-item"><a class="nav-link" href="/complaints" style="text-decoration: none; color:#ffffff">Complaints</a></li>
+                    <%}%>
+                    <%if (user.isSuperAdmin===true) {%>
+                        <li class="nav-item"><a class="nav-link" href="/help" style="text-decoration: none; color:#ffffff">Help Requests</a></li>
+                        <%}%>
+                    <%if((user.isAdmin===false)&&(user.isSuperAdmin===false)){%>
+                    <li class="nav-item"><a class="nav-link" href="/usercomplaints" style="text-decoration: none; color:#ffffff">Your Complaints</a></li>
+                    <%}%>
                     <li class="nav-item"><a class="nav-link" href="/" style="text-decoration: none; color:#ffffff">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/post" style="text-decoration: none; color:#ffffff">Timeline</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Follow Users</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout" style="text-decoration: none; color:#ffffff">Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-
+    
 
 
     <br>
@@ -35,6 +44,9 @@
     <%let j=0,k=0%>
     <%let i=0%>    
     <%post.reverse();profilepic.reverse();by.reverse()%>
+    <%if(post.length<1) {%>
+        <center><p><strong>Start following other users to fill up your timeline with interesting content!</strong></p></center>
+    <%}%>
     <%post.forEach(ele=>{%>
     <div>        
         <div class="container">        
@@ -71,7 +83,7 @@
                     <%if(ele.photo!=null){%>
                     <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
                     <%}%>
-                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:left;" id="<%=ele._id%>">👍<%=ele.likes.length%></div>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:left;cursor:pointer;" id="<%=ele._id%>">👍<%=ele.likes.length%></div>
                     <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left;" id="c<%=ele._id%>"><a href="/comments/<%=ele._id%>">💬<%=ele.comments.length%></a></div>
                     <script>
                         document.getElementById('<%=ele._id%>').onclick = function()  {     
@@ -87,28 +99,7 @@
                     </script>
             </div>
             <br><br> 
-                <%if(j==0){%>
-                <div class="col" style="background:#03274b; margin-bottom: 5%;">
-                    <div></div>
-                    <p  style=" color:white;"><strong>Friends</strong></p>
-                    <hr style="border-top: 1px solid white;">
-                    <p style="margin-bottom: -7px;margin-top : -7px;color:#ffffff">@user1</p>
-                    <hr style="border-top: 1px solid white;">
-                    <p style="margin-bottom: -7px;margin-top: -7px;color:#ffffff">@user2</p>
-                    <hr style="border-top: 1px solid white;">
-                    <p style="margin-bottom: -7px;margin-top: -7px;color:#ffffff">@user3</p>
-                    <hr style="border-top: 1px solid white;">
-                    <p style="margin-bottom: -7px;margin-top: -7px;color:#ffffff">@user4</p>
-                </div>
-                <br><br>
-                <%j++;%>
-            <%}else{%>
-                <div class="col" style="width: 100%;height: 100%;">
-                    <div></div>
-                    <p></p>
-                    <p></p>
-                </div>
-            <%}%>
+                
                 <br><br>
                 
                 

@@ -73,7 +73,7 @@
                     <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
                     <%}%>
                     <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left; background: #03274b; padding: 5px; margin:10px;" id="c<%=ele._id%>"><a href="/chat/<%=ele._id%>" style=" color: white; text-decoration: none;">Chat & Discuss</a></div>
-                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:right; background: #03274b; padding: 5px; color: white;margin:10px;" id="<%=ele._id%>">Mark as Resolved</div>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:right; background: #03274b; padding: 5px; color: white;margin:10px;cursor:pointer;" id="<%=ele._id%>">Mark as Resolved</div>
                     <script>
                         document.getElementById('<%=ele._id%>').onclick = function()  {     
                             $.post('/resolve/<%=ele._id%>', function(data, status){   
