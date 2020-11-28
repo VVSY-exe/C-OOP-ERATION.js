@@ -2,6 +2,7 @@ const user = require('../models/user.js');
 const Post = require('../models/posts.js');
 const Profilephotos = require('../models/profilephotos.js');
 const Chat = require('../models/chat.js')
+const Register = require('../models/register.js')
 const CryptoJS = require('crypto-js');
 require('dotenv').config()
 class Database {
@@ -26,6 +27,9 @@ class Database {
         else if(classname.toLowerCase()==="chat") {
             classname = Chat;
         }
+        else if(classname.toLowerCase()==="register") {
+            classname = Register;
+        }
         else {
                 
         }
@@ -43,11 +47,9 @@ class Database {
     }
 
 
-    async findExisting(username, password = null) {
+    async findExisting(username, password = null, email = null) {
         if (password === null) {
-            let User = await user.findOne({
-                'username': username
-            });
+            let User = await user.findOne({'username': username}) || await user.findOne({'email': email});
             return User;
         } else {
             let User = await user.findOne({
