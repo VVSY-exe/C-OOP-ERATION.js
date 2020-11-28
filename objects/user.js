@@ -4,8 +4,20 @@ const CryptoJS = require('crypto-js');
 const jwt = require('jsonwebtoken');
 const Post = require('./post.js');
 const Profilephotos = require('./profilephotos.js');
-
+const Register = require('../models/register.js');
+const Random = require('./random.js')
 const secretKey = process.env.cryptosecret || "your-crypto-secret-key"
+var nodemailer = require('nodemailer');
+const { stat } = require('fs');
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.email,
+    pass: process.env.password
+  }
+});
+
 
 //class User inherits class database which adds various functionalities to it 
 class User extends Database {
@@ -19,15 +31,50 @@ class User extends Database {
         }
     }
 
+    async generateRegisterLink(email) {
+        let link = new Register();
+        link.email = email;
+        link.id = new Random().randomString(16);
+        await link.save();
+        return link;
+    }
+
+    async sendRegisterMail(email,res){
+        let tempregister= await this.generateRegisterLink(email);
+        let link = process.env.hosturl+'/signup/'+tempregister.id;
+            let mailOptions = {
+                from: process.env.email,
+                to:email,
+                subject:'Registration Link for C-OOP-ERATION',
+                html:`<h1>Hello! Thanks for registering on C-OOP-ERATION!</h1><br>
+                        <h3>To verify your email and continue registration please click on the link below:</h2><br>
+                        <a href="${link}">Click here to get started!</a><br>
+                        <p><i>If this was not you, please ignore this mail.</i></p><br>` 
+            
+                }
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                  console.log(error);
+                  res.send("An error occured while sending email, please make sure your email is correct, or try again later.");
+                } else {
+                  console.log('Email sent: ' + info.response);
+                  res.send("Please check your email for the verification link.")
+                }
+              });
+              
+    
+}
 
     async createUser(req,page=false) {
 
-        let bool = await this.findExisting(this.getData().username); //calls the findExisting function of Database class to check if username already exists
+        let bool = await this.findExisting(this.getData().username,null,this.getData().email); //calls the findExisting function of Database class to check if username already exists
         //*advantage of inheritance* 
         //the function is directly accessible to the User class because of inheritance
         if (bool === null){
             let flag = 1;
             let newUser = new user(this.getData());
+            console.log("user"+newUser);
+            console.log("test")
             let cryptedPassword = CryptoJS.AES.encrypt(this.getData().password, secretKey)
             newUser.password = cryptedPassword;
             if (req.files!=null){
@@ -41,6 +88,7 @@ class User extends Database {
                     console.log("A new user has been registered. The Data is as follows:\n" + newUser);
                 }
             });
+
         }
         else {
             newUser.isPage = true;
@@ -231,7 +279,6 @@ class User extends Database {
         return {post,by,profilepic};
     }
 }
-
 
 
 module.exports = User;
