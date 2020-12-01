@@ -78,8 +78,7 @@ class User extends Database {
             await new Profilephotos().assignProfilePhoto(req, newUser);
             if (page==false) { //to prevent Parallel Save Error in MongoDB
             try {
-                await newUser.save()
-                flag = 0;
+                await newUser.save();
                 console.log("A new user has been registered. The Data is as follows:\n" + newUser);
                 }
         

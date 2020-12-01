@@ -89,27 +89,6 @@ app.get('/signup/:id', async (req, res) => {
     }
 })
 
-app.get('/pagesignup', async (req, res) => {
-    res.status(200).render(__dirname + '/public/views/pagesignup/pagesignup.ejs');
-})
-
-app.post('/pagesignup', async (req, res) => {
-    const page = await new Page(req.body);
-    let status = await page.createPage(req);
-    if (!status) {
-        res.send('You failed to register! Please make sure you entered all the data.')
-    } else {
-        res.send(`Success!
-        <script>
-        setTimeout(function () {
-           // after 2 seconds
-           window.location = "/login";
-        }, 1500)
-      </script>`);
-    }
-
-})
-
 app.get('/newsignup',authenticateToken,async(req,res)=>{
     if (req.user!=null) {
         return res.redirect('/');
