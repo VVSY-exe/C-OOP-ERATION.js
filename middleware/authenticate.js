@@ -9,7 +9,7 @@ async function authenticateToken(req,res,next){
     return req.user;
     }
     
-    try{
+    try {
         const verified = jwt.verify(token,process.env.JWT_KEY)
         let users = await new User().showdb('User');
         let tokens = [];
@@ -28,7 +28,8 @@ async function authenticateToken(req,res,next){
             next();
             return req.user;
         }
-    }catch(err){
+    }
+    catch (err) {
         res.send('An error occured while verifying token:\n'+err);
         next();
     }
