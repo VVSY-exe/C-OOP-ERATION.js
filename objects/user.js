@@ -8,7 +8,6 @@ const Register = require('../models/register.js');
 const Random = require('./random.js')
 const secretKey = process.env.cryptosecret || "your-crypto-secret-key"
 var nodemailer = require('nodemailer');
-const { stat } = require('fs');
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -73,21 +72,21 @@ class User extends Database {
         if (bool === null){
             let flag = 1;
             let newUser = new user(this.getData());
-            console.log("user"+newUser);
-            console.log("test")
             let cryptedPassword = CryptoJS.AES.encrypt(this.getData().password, secretKey)
             newUser.password = cryptedPassword;
             if (req.files!=null){
             await new Profilephotos().assignProfilePhoto(req, newUser);
             if (page==false) { //to prevent Parallel Save Error in MongoDB
-            await newUser.save((err, user) => {
-                if (err) {
-                    console.log("An error occured while saving your data:\n" + err);
-                    flag = 0;
-                } else {
-                    console.log("A new user has been registered. The Data is as follows:\n" + newUser);
+            try {
+                await newUser.save()
+                flag = 0;
+                console.log("A new user has been registered. The Data is as follows:\n" + newUser);
                 }
-            });
+        
+        catch(err) {
+            console.log("An error occured while saving your data:\n" + err);
+            flag = 0;
+        }
 
         }
         else {
@@ -109,12 +108,14 @@ class User extends Database {
     }
 
     async loginCheck(username, password) {
+        //checks if user exists, if yes, returns the user
         let user = await this.findExisting(username, password);
         return user;
     }
 
     async generateToken(User, res) {
         if (User != null) {
+            //if user is correct, sign a new jwt token and store it in the user's data
             let userid = User._id;
             const accessToken = jwt.sign(User.toJSON(), process.env.JWT_KEY);
             res.cookie('Authorization', accessToken, {
@@ -132,6 +133,7 @@ class User extends Database {
     }
 
     async logout(user, req, res, all = false) {
+        //if all is false, remove only the current session from the database
         if (all === false) {
             let token = req.cookies.Authorization;
             res.clearCookie("Authorization");
@@ -139,6 +141,7 @@ class User extends Database {
                 return ele._id != token;
             })
             await user.save();
+            //if all is true, remove all the sessions
         } else if (all === true) {
             user.tokens = [];
             console.log('Cleared all tokens');
@@ -152,12 +155,14 @@ class User extends Database {
 
 
     async getTimeline(user) {
+        //get the whole post database
         let postdb = await new Post().showdb('post');
+        //create variables to store data
         let post = [],
             by = [],
             profilepic = [];
         let flag = 0;
-
+        //loop through the database to filter the timeline
         for (let i = 0; i < postdb.length; i++) {
             for (let j = 0; j < user.following.length; j++) {
                 if (user.following[j].friend === postdb[i].id || user._id == postdb[i].id) {
@@ -175,11 +180,13 @@ class User extends Database {
             }
 
         }
+        //return the data
         return {post,by,profilepic};
     }
 
 
     async getDashboard(req){
+        //get the posts of the user
         let following = [];
         let database = new User()
         let post = await this.showdb('post',{'id': req.user._id},true);  //polymorphism
@@ -190,6 +197,7 @@ class User extends Database {
         }
         let profilephoto = await this.showdb('profilephotos',{"id": req.user._id.toString()})
         profilephoto = profilephoto.profilephoto;
+        //return the data
     return {
        post,
        user: req.user,
@@ -199,13 +207,16 @@ class User extends Database {
     }
     
     async getFollowingList(req){
+        //get the user 
         let user = req.user;
         let users = await new User().showdb('User');
         let profilepic = []
+        //filter user's name from the list
         users = users.filter(function (obj) {
             return obj.name !== user.name;
         });
         let following = []
+        //check if user already follows
         for (let user of users) {
             let flag = 0;
             for (let follows of req.user.following) {
@@ -218,12 +229,15 @@ class User extends Database {
             if (flag === 0) {
                 following.push(false);
             }
+            
         }
+        //get profilephotos
         for (let user of users) {
             profilepic.push(await new Profilephotos().showdb('Profilephotos',{
                 'id': user._id
             }))
         }
+        //return all the data
         return {
             users,
             user: req.user,
@@ -233,15 +247,19 @@ class User extends Database {
     }
 
     async followUser(req,res){
+        //get the user to be folloed
         let user = req.user;
         let followuser = await new User().showdb('User', {
             '_id': req.params.id
         });
+        //check if user exists
         if (followuser != null) {
+            //if existing, add user to their followers
             followuser.followers.push({
                 'friend': user._id
             });
             await followuser.save();
+            //add the followed user to the user's following list
             user.following.push({
                 'friend': followuser._id
             });
@@ -252,16 +270,21 @@ class User extends Database {
     }
 
     async getComplaints(user={},help=false) {
+        ////create variables to store data
         let post = [],
             by = [],
             profilepic = [];
             let postdb;
         if(user==={}){
+            //get posts of all users
              postdb = await new Post().showdb('post');
         }
         else {
+            //get all posts of a specific user
              postdb= await new Post().showdb('post',{'id':user._id},true);
         }
+
+        //loop through the data and filter it
         for (let i = 0; i < postdb.length; i++) {
             let tag;
                 if (help==false) {
@@ -276,6 +299,28 @@ class User extends Database {
                     by.push(await new User().showdb('User', {'_id': postdb[i].id}))
                 }
         }
+        //return all the filtered data
+        return {post,by,profilepic};
+    }
+    async getAnnouncements(user={}) {
+        //create variables to store data
+        let post = [],
+            by = [],
+            profilepic = [];
+            let postdb;
+            //get all the posts
+            postdb = await new Post().showdb('post');
+        
+        for (let i = 0; i < postdb.length; i++) {
+            //filter all the posts with Announcement tag
+            let tag = "Announcement";
+                if (postdb[i].tag==tag) {
+                    profilepic.push(await new Profilephotos().showdb('profilephotos',{'id': (postdb[i].id)}))
+                    post.push(postdb[i]);
+                    by.push(await new User().showdb('User', {'_id': postdb[i].id}))
+                }
+        }
+        //return the filtered data
         return {post,by,profilepic};
     }
 }
