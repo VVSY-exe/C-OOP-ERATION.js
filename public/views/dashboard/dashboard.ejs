@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>dashboard</title>
+    <title>@<%=user.username%>'s Dashboard - C-OOP-ERATION</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/views/dashboard/styles.min.css">
 </head>
@@ -17,6 +17,7 @@
                     class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto" >
+                    <li class="nav-item"><a class="nav-link" href="/announcements" style="text-decoration: none; color:#ffffff">Announcements</a></li>
                     <%if (user.isAdmin===true) {%>
                     <li class="nav-item"><a class="nav-link" href="/complaints" style="text-decoration: none; color:#ffffff">Complaints</a></li>
                     <%}%>
@@ -75,7 +76,7 @@
                     <p></p>
                 </div>
                 <%}%>
-                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%">
+                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%" id="div<%=ele._id%>">
                     <div class="row" style="background:  #03274b;">
                     <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilephoto%>"
                 style="width: 42%; height: 61%;">  </div>
@@ -91,6 +92,16 @@
         <%if(ele.photo!=null){%>
         <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>"
             style="width: auto;height: auto;text-align: center;margin-top: 7px; margin-bottom: 10px;">
+        <%}%>
+        <%if(ele.id==user._id) {%>
+            <div style="margin-left:85%; margin-bottom:1%; text-align: left; display: inline; float:left;"
+            id="d<%=ele._id%>">Delete Post🗑️</div>
+            <script>
+                document.getElementById('d<%=ele._id%>').onclick = function () {
+                            $.post('/deletepost/<%=ele._id%>', function (data, status) {})
+                            document.getElementById('div<%=ele._id%>').remove()
+                            }
+            </script>
         <%}%>
                 </div>
             </div>

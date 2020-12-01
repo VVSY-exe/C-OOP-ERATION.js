@@ -4,23 +4,33 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Users</title>
+    <title>Users - C-OOP-ERATION</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="views/users/styles.min.css">
 </head>
 
 <body style="color: rgb(255, 255, 255);background: rgb(255, 255, 255);">
-    <nav class="navbar navbar-light navbar-expand-md navigation-clean"  style="background:  #03274b;">
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean"  style="background: #03274b;">
         <div class="container" style="text-decoration: none; color:#ffffff"> <a class="navbar-brand" href="#">@<%=user.username%></a><button data-toggle="collapse"
                 class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span>
                 <span
                     class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto" >
+                    <li class="nav-item"><a class="nav-link" href="/announcements" style="text-decoration: none; color:#ffffff">Announcements</a></li>
+                    <%if (user.isAdmin===true) {%>
+                    <li class="nav-item"><a class="nav-link" href="/complaints" style="text-decoration: none; color:#ffffff">Complaints</a></li>
+                    <%}%>
+                    <%if (user.isSuperAdmin===true) {%>
+                        <li class="nav-item"><a class="nav-link" href="/help" style="text-decoration: none; color:#ffffff">Help Requests</a></li>
+                        <%}%>
+                    <%if((user.isAdmin===false)&&(user.isSuperAdmin===false)){%>
+                    <li class="nav-item"><a class="nav-link" href="/usercomplaints" style="text-decoration: none; color:#ffffff">Your Complaints</a></li>
+                    <%}%>
                     <li class="nav-item"><a class="nav-link" href="/" style="text-decoration: none; color:#ffffff">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/post" style="text-decoration: none; color:#ffffff">Timeline</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Follow Users</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout" style="text-decoration: none; color:#ffffff">Logout</a></li>
                 </ul>
             </div>
