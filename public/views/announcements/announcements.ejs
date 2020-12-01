@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Announcements - C-OOP-ERATION</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/views/posts/styles.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body style="background:rgba(255, 255, 255, 0.967);">
+    
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean"  style="background: #03274b;">
+        <div class="container" style="text-decoration: none; color:#ffffff"> <a class="navbar-brand" href="#">@<%=user.username%></a><button data-toggle="collapse"
+                class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span>
+                <span
+                    class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto" >
+                    <li class="nav-item"><a class="nav-link" href="/announcements" style="text-decoration: none; color:#ffffff">Announcements</a></li>
+                    <%if (user.isAdmin===true) {%>
+                    <li class="nav-item"><a class="nav-link" href="/complaints" style="text-decoration: none; color:#ffffff">Complaints</a></li>
+                    <%}%>
+                    <%if (user.isSuperAdmin===true) {%>
+                        <li class="nav-item"><a class="nav-link" href="/help" style="text-decoration: none; color:#ffffff">Help Requests</a></li>
+                        <%}%>
+                    <%if((user.isAdmin===false)&&(user.isSuperAdmin===false)){%>
+                    <li class="nav-item"><a class="nav-link" href="/usercomplaints" style="text-decoration: none; color:#ffffff">Your Complaints</a></li>
+                    <%}%>
+                    <li class="nav-item"><a class="nav-link" href="/" style="text-decoration: none; color:#ffffff">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/post" style="text-decoration: none; color:#ffffff">Timeline</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users" style="text-decoration: none; color:#ffffff">Follow Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout" style="text-decoration: none; color:#ffffff">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+
+
+    <br>
+
+    <%let j=0,k=0%>
+    <%let i=0%>    
+    <%post.reverse();profilepic.reverse();by.reverse()%>
+    <%if(post.length<1) {%>
+        <center><p><strong>There are no Announcements yet!</strong></p></center>
+    <%}%>
+    <%post.forEach(ele=>{%>
+    <div>        
+        <div class="container">        
+            <div class="row">
+                <%if(k==0){%>
+                <div class="col-md-4" style="background: #03274b;padding: 11px;text-align: center;width: 100%;height: 100%;max-width: 20%;">
+                    <div></div>
+                    <p style="padding: 4px;text-align: center;font-weight: bolder;color:#ffffff";>@<%=user.username%></p>
+                    <hr style="border-top: 1px solid white">
+                    <p style="color:#ffffff">Followers: <%=user.followers.length%></p>
+                    <p style="color:#ffffff">Following: <%=user.following.length%></p>
+                    <hr style="border-top: 1px solid white">
+                    <button class="btn btn-primary" style="background-color: rgb(255, 89, 0)"type="button" style="text-align: center;padding: 5px;">Follow Users</button></div>
+                    <%k++%>
+                    <%}else{%>
+                        <div class="col-md-4" style="padding: 11px;text-align: center;width: 100%;height: 100%;max-width: 20%;">
+                            <div></div>
+                            <p style="padding: 4px;text-align: center;"></p>
+                            <hr >
+                            <p></p>
+                            <p></p>
+                        </div>    
+                    <%}%>
+                    <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 10%;">
+                    <div class="row" style="background:#03274b;">
+                        <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
+                        <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
+                            <p style="text-align: left;font-size: 17px ;color: rgb(255, 255, 255)"><%=by[i].name%><%i++%></p>
+                            <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;<%=ele.timestamp.toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})%></p>
+                        </div>
+                    </div>
+                    <p style="text-align: left;"><%=ele.post%>&nbsp;<br></p>
+                    <hr style="border-top: 2px solid white;">
+                    <%if(ele.photo!=null){%>
+                    <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
+                    <%}%>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left;" id="c<%=ele._id%>"><a href="/comments/<%=ele._id%>">💬<%=ele.comments.length%></a></div>
+                    
+            </div>
+            <br><br> 
+                
+                <br><br>
+                
+                
+            </div>
+        </div>
+    
+    </div>
+    <%})%>
+    <center>
+        <%if(user.isAdmin===true||user.isSuperAdmin===true) {%>
+        <form action="/post" method="POST" enctype="multipart/form-data">
+           
+            <br><br><br><div style="font-family: lucida console; font-size: 1.5vw; font-weight: bolder;">Create Post</div><br><br>
+            Post:<br><textarea name="post" rows="10" cols="70"></textarea><br><br>
+            <label for="tag">Tag:</label>
+            <select name="tag" id="tag">
+                <option value="Announcement">Announcement</option>
+            </select>
+            <br><br>
+            Upload Image: &nbsp&nbsp<input type ="file" name="postphoto" id="inp" ><br><br>
+            <input type='submit' value="Post">
+        </form>
+        <%}%>
+    </center>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
