@@ -13,7 +13,6 @@ const User = require('./objects/user.js');
 const Database = require('./objects/database.js');
 const Post = require('./objects/post.js');
 const Random = require('./objects/random.js');
-const Page = require('./objects/page.js');
 const Chat = require('./objects/chat.js');
 const authenticateToken = require('./middleware/authenticate.js');
 var cookieParser = require('cookie-parser');
@@ -74,8 +73,14 @@ app.get('/', authenticateToken, async function (req, res) {
 //OOPs not needed
 app.get('/signup/:id', async (req, res) => {
     let id= req.params.id;
-    let link= await new User().showdb('register',{'id':id});
+    let link;
+    try {
+    link= await new User().showdb('register',{'id':id});
     console.log(link)
+    }
+    catch(err) {
+        console.log("An error occured while checking your link. Please try registering again.")
+    }
     if(link!=null){
     res.status(200).render(__dirname + '/public/views/signup/signup.ejs',{'id': id});
     }
@@ -254,11 +259,21 @@ app.get('/post', authenticateToken, async (req, res) => {
 app.post('/post', authenticateToken, async (req, res) => {
     req.body.id = req.user._id;
     let newpost = new Post()
+    if (req.body.tag=="Announcement") {
+        if (req.isAdmin==false||req.isSuperAdmin==false){
+            return;
+        }
+    }
     let post = await newpost.createPost(req.body, req);
     if (req.body.tag==="Complaint") {
         let chat = await new Chat().createChat(post._id);
     }
-    res.redirect('/post');
+    if (req.body.tag!="Announcement") {
+        res.redirect('/post');
+    }
+    else {
+        res.redirect('/announcements');
+    }
 })
 
 //Implemented OOPs
@@ -267,6 +282,17 @@ app.post('/likepost/:id', authenticateToken, async (req, res) => {
         new Post().likePost(req, res);
     } else {
         res.redirect('/login')
+    }
+})
+
+app.post('/deletepost/:id', authenticateToken, async (req, res) => {
+    let post = await new Post().showdb('Post',{'_id': req.params.id});
+    if (req.user && req.user._id==post.id) {
+        await post.remove();
+        res.send("removed");
+    }
+    else {
+        res.redirect('/')
     }
 })
 
@@ -423,7 +449,7 @@ app.get('/chat/:id', authenticateToken, async (req, res) => {
 
             });
         });
-    res.render(__dirname + '/public/views/chat/index.ejs',{user:req.user,chat});
+    res.render(__dirname + '/public/views/chat/chat.ejs',{user:req.user,chat});
         }
         else{
             res.send("This chat does not exist.")
@@ -465,7 +491,31 @@ app.get('/help', authenticateToken, async (req, res) => {
     else {
         res.redirect('/');
     }
+});
+
+app.get('/announcements', authenticateToken, async (req, res) => {
+    if (req.user!=null) {
+        let data = await new User().getAnnouncements();
+
+        res.render(__dirname + '/public/views/announcements/announcements.ejs', {
+            post: data['post'],
+            by: data['by'],
+            profilepic: data['profilepic'],
+            user: req.user
+        });
+}
+else {
+    res.redirect('/');
+}
 })
+
+//render 404 page, if the requested URL is wrong or doesn't exist on the server 
+app.use(function (req, res, next) {
+    res.status(404);
+    res.render(__dirname + '/public/views/404/404.ejs', {
+        url: req.url
+    });
+});
 
 app.get('/keepalive', (req, res) => {
     res.send('Ping Recieved ' + Date.now())
