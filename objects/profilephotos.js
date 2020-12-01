@@ -6,6 +6,7 @@ class profilephoto extends Database{
     }
 
     async assignProfilePhoto(req,status){
+        //creates a new pfp document and assigns the user's id to it
         let pfp = new Profilephotos({
             id: await status._id,
             profilephoto: req.files.profilephoto.data.toString("base64")

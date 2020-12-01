@@ -31,8 +31,9 @@ class Database {
             classname = Register;
         }
         else {
-                
+            return console.err("An invalid class name was specified for the method showdb.")
         }
+        try {
         if (JSON.stringify(data) === "{}") {
             return await classname.find({});
         } else {
@@ -43,6 +44,10 @@ class Database {
                 return await classname.find(data);
             }
         }
+    }
+    catch (err) {
+        console.err("An error occured while getting the data in showdb: "+err)
+    }
 
     }
 
