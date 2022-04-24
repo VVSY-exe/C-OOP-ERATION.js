@@ -49,7 +49,6 @@ class User extends Database {
                         <h3>To verify your email and continue registration please click on the link below:</h2><br>
                         <a href="${link}">Click here to get started!</a><br>
                         <p><i>If this was not you, please ignore this mail.</i></p><br>` 
-            
                 }
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
@@ -192,7 +191,6 @@ class User extends Database {
         for (const ele of req.user.following) {
             let name = await database.showdb('User', {'_id': ele.friend});
             following.push(name.name);
-
         }
         let profilephoto = await this.showdb('profilephotos',{"id": req.user._id.toString()})
         profilephoto = profilephoto.profilephoto;

@@ -41,6 +41,8 @@ var io = require('socket.io')(server);
 
 var validator = require('validator');
 
+
+
 //GET request handler for homepage
 //OOPs impelemented
 app.get('/', authenticateToken, async function (req, res) {

@@ -12,7 +12,7 @@ class Database {
         }
     }
 
-    async showdb(classname, data = {}, all=false) {    
+    async showdb(classname, data = {}, all=false) { //polymorphism   
         if (classname.toLowerCase() === 'user') {
             classname = user;
         } 
@@ -52,7 +52,10 @@ class Database {
     }
 
 
-    async findExisting(username, password = null, email = null) {
+    async findExisting(username, password = null, email = null) { //polymorphism
+        //findExisting(a1);
+        //findExisting(a1,a2);
+        //findExisting(a1,a2,a3);
         if (password === null) {
             let User = await user.findOne({'username': username}) || await user.findOne({'email': email});
             return User;

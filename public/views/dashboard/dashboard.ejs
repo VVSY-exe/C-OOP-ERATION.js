@@ -40,7 +40,7 @@
             style="background: url('https://cdn.bootstrapstudio.io/placeholders/1400x800.png'); display: inline-block;
             width: 150px;
             height: 150px;object-fit: cover; border-radius: 50%;border:solid 3px rgb(255, 89, 0) ;"
-            src="data:image/png;base64,<%=profilephoto%>" width="200" height="200" alt="profile picture" id="pfp" />
+            src="<%=profilephoto%>" width="200" height="200" alt="profile picture" id="pfp" />
         <div class="col"><h1 id="username" style="margin-left:20px;"><%=user.name%></h1>
  <button class="btn btn-primary" type="button" style="margin-left:20px;">Followers:
                 
@@ -78,7 +78,7 @@
                 <%}%>
                     <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%" id="div<%=ele._id%>">
                     <div class="row" style="background:  #03274b;">
-                    <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilephoto%>"
+                    <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="<%=profilephoto%>"
                 style="width: 42%; height: 61%;">  </div>
             <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
                 <p style="text-align: left;font-size: 17px;font-weight: bolder;color:#ffffff">@<%=user.username%></p>
@@ -90,7 +90,7 @@
         <p style="text-align: left;"><br><%=ele.post%>&nbsp;<br></p><%i++%>
         <hr style="border-top: 2px solid white;">
         <%if(ele.photo!=null){%>
-        <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>"
+        <img class="img-fluid" src="<%=ele.photo%>"
             style="width: auto;height: auto;text-align: center;margin-top: 7px; margin-bottom: 10px;">
         <%}%>
         <%if(ele.id==user._id) {%>

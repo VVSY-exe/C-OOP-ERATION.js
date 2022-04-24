@@ -73,7 +73,7 @@
                     <%}%>
                     <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 10%;">
                     <div class="row" style="background:#03274b;">
-                        <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
+                        <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="<%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
                         <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
                             <p style="text-align: left;font-size: 17px ;color: rgb(255, 255, 255)"><%=by[i].name%><%i++%></p>
                             <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;<%=ele.timestamp.toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})%></p>
@@ -82,7 +82,7 @@
                     <p style="text-align: left;"><%=ele.post%>&nbsp;<br></p>
                     <hr style="border-top: 2px solid white;">
                     <%if(ele.photo!=null){%>
-                    <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
+                    <img class="img-fluid" src="<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
                     <%}%>
                     <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left;" id="c<%=ele._id%>"><a href="/comments/<%=ele._id%>">💬<%=ele.comments.length%></a></div>
                     

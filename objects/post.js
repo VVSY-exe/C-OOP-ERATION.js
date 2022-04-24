@@ -2,6 +2,15 @@ const Database = require("./database.js");
 const posts = require('../models/posts.js');
 const User = require('./user.js');
 const postdb = require("../models/posts.js");
+const cloudinary = require("cloudinary");
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+});
+
+
 //multiple inheritance
 //User inherits Database, and post inherits user so post inherits database
 class post extends Database {
@@ -21,7 +30,9 @@ class post extends Database {
             postdb.post = data.post;        //stores the post that the user posted in that entry
             postdb.tag = data.tag;          //stores the tag of the post the user has created
             if (req.files != null) {        //check if the user has uploaded an image
-                postdb.photo = req.files.postphoto.data.toString("base64")
+                let response = await cloudinary.uploader.upload("data:image/png;base64," + req.files.postphoto.data.toString("base64"));
+                  console.log(response);
+                  postdb.photo =  response.secure_url;
             }
             try {
             await postdb.save();
@@ -35,7 +46,8 @@ class post extends Database {
         else if (req.files != null) {
             let postdb = new posts()
             postdb.id = data.id;
-            postdb.photo = req.files.postphoto.data.toString("base64")
+            let response = await cloudinary.uploader.upload("data:image/png;base64," + req.files.postphoto.data.toString("base64"));
+            postdb.photo =  response.secure_url;
             try {
                 await postdb.save();
                 return postdb;

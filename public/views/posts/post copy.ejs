@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Complaints - C-OOP-ERATION</title>
+    <title>Timeline</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/views/posts/styles.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -19,7 +19,6 @@
                     class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto" >
-                    <li class="nav-item"><a class="nav-link" href="/announcements" style="text-decoration: none; color:#ffffff">Announcements</a></li>
                     <%if (user.isAdmin===true) {%>
                     <li class="nav-item"><a class="nav-link" href="/complaints" style="text-decoration: none; color:#ffffff">Complaints</a></li>
                     <%}%>
@@ -37,14 +36,18 @@
             </div>
         </div>
     </nav>
+    
+
+
     <br>
+
     <%let j=0,k=0%>
     <%let i=0%>    
     <%post.reverse();profilepic.reverse();by.reverse()%>
-    <%if(post.length<1){%>
-        <center><p><strong>No complaints/help requests yet.</strong></p></center>
+    <%if(post.length<1) {%>
+        <center><p><strong>Start following other users to fill up your timeline with interesting content!</strong></p></center>
     <%}%>
-        <%post.forEach(ele=>{%>
+    <%post.forEach(ele=>{%>
     <div>        
         <div class="container">        
             <div class="row">
@@ -66,12 +69,10 @@
                             <p></p>
                             <p></p>
                         </div>    
-                    <%}%>                
+                    <%}%>
                     <div class="col-md-4" style="max-width: 64%;width: 60%;min-width: 60%;text-align: center;background: #b8b1b1;margin: 0px;margin-left: 3%;margin-right: 3%; margin-bottom: 10%;">
                     <div class="row" style="background:#03274b;">
-                        <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="
-                            
-                            <%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
+                        <div class="col-md-4" style="max-width: 20%;text-align: right;margin-top: 16px;margin-bottom: -17px;margin-left: -45px;"><img src="data:image/png;base64,<%=profilepic[i].profilephoto%>" style="width: 42%;height: 61%;"></div>
                         <div class="col" style="text-align: left;margin-top: 9px;margin-bottom: -7px;">
                             <p style="text-align: left;font-size: 17px ;color: rgb(255, 255, 255)"><%=by[i].name%><%i++%></p>
                             <p style="margin-bottom: 33px;margin-top: -16px;font-size: 13px;text-align: left;color: rgb(101,119,136);">&nbsp;<%=ele.timestamp.toLocaleString("en-GB", {timeZone: "Asia/Kolkata",month: "long",day:"2-digit",year:"numeric","hour":"2-digit","minute":"2-digit","second":"2-digit",hour12: true})%></p>
@@ -80,43 +81,48 @@
                     <p style="text-align: left;"><%=ele.post%>&nbsp;<br></p>
                     <hr style="border-top: 2px solid white;">
                     <%if(ele.photo!=null){%>
-                    <img class="img-fluid" src="<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
+                    <img class="img-fluid" src="data:image/png;base64,<%=ele.photo%>" style="width: auto;height: auto;text-align: center;margin-top: 7px;margin-bottom: 10px;"><br>
                     <%}%>
-                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:right; cursor: pointer; background: #03274b; padding: 5px; color: white;margin:10px;" id="<%=ele._id%>">Mark as Resolved</div>
-                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left; background: #03274b; padding: 5px; margin:10px;" ><a href="/chat/<%=ele._id%>" style=" color: white; text-decoration: none;">Chat & Discuss</a></div>
-                    <%if (user.isSuperAdmin===false) {%>
-                    <div style="margin-left:1%; margin-top:1%; text-align: left; display: inline; float:center; cursor: pointer; background: #03274b; padding: 5px; margin:10px;color: white;" id="u<%=ele._id%>">Transfer To Administration</div>
-                    <%}%>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display:inline; float:left;cursor:pointer;" id="<%=ele._id%>">👍<%=ele.likes.length%></div>
+                    <div style="margin-left:1%; margin-bottom:1%; text-align: left; display: inline; float:left;" id="c<%=ele._id%>"><a href="/comments/<%=ele._id%>">💬<%=ele.comments.length%></a></div>
                     <script>
                         document.getElementById('<%=ele._id%>').onclick = function()  {     
-                            $.post('/resolve/<%=ele._id%>', function(data, status){   
+                            $.post('/likepost/<%=ele._id%>', function(data, status){   
                             })
-                            setTimeout(function () {
-                                // after 2 seconds
-                                window.location.reload();
-                            }, 1500)
-                            
-                        }
-                        document.getElementById('u<%=ele._id%>').onclick = function()  {     
-                            $.post('/upgrade/<%=ele._id%>', function(data, status){   
-                            })
-                            setTimeout(function () {
-                                // after 2 seconds
-                                window.location.reload();
-                            }, 1500)
-                            
+                            document.getElementById('<%=ele._id%>').innerText = "👍<%=ele.likes.length+1%>"
+                            document.getElementById('<%=ele._id%>').onclick= ()=>{
+                                $.post('/removelike/<%=ele._id%>', function(data, status){
+                                })
+                                document.getElementById('<%=ele._id%>').innerText = "👍<%=ele.likes.length%>"
+                            }
                         }
                     </script>
             </div>
             <br><br> 
                 
-                <br><br>         
+                <br><br>
+                
+                
             </div>
         </div>
     
     </div>
     <%})%>
     <center>
+        <form action="/post" method="POST" enctype="multipart/form-data">
+           
+            <br><br><br><div style="font-family: lucida console; font-size: 1.5vw; font-weight: bolder;">Create Post</div><br><br>
+            Post:<br><textarea name="post" rows="10" cols="70"></textarea><br><br>
+            <label for="tag">Tag:</label>
+            <select name="tag" id="tag">
+                <option value="General">General</option>
+                <option value="Complaint">Complaint</option>
+                <option value="Help">Help</option>
+            </select>
+            <br><br>
+            Upload Image: &nbsp&nbsp<input type ="file" name="postphoto" id="inp" ><br><br>
+            <input type='submit' value="Post">
+        </form>
     </center>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
